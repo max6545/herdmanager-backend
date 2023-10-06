@@ -1,0 +1,27 @@
+from flask_bcrypt import generate_password_hash, check_password_hash
+
+from db.database import db
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False, unique=True)
+    password = db.Column(db.String(2000), nullable=False, unique=True)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+        }
+
+    def hash_password(self):
+        self.password = generate_password_hash(self.password).decode('utf8')
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+
+    @staticmethod
+    def create_user(username: str, password: str):
+        user = User(name=username, password=password)
+        user.hash_password()
+        return user
