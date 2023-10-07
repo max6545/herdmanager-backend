@@ -1,5 +1,4 @@
 from flask_bcrypt import generate_password_hash, check_password_hash
-
 from db.database import db
 
 
@@ -7,7 +6,8 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False, unique=True)
     password = db.Column(db.String(2000), nullable=False, unique=True)
-
+    mobile_devices = db.relationship('MobileDevice', backref='mobile_device')
+    farm_id = db.Column(db.Integer, db.ForeignKey('farm.id'))
     def serialize(self):
         return {
             'id': self.id,

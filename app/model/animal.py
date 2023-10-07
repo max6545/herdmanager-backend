@@ -2,7 +2,7 @@ from enum import Enum, auto
 
 from sqlalchemy import event
 from db.database import db
-from model.watermelon_model import WatermelonModel
+from model.watermelon_model import WatermelonModel, ChangeLog
 
 
 class AnimalType(Enum):
@@ -22,6 +22,7 @@ class Animal(WatermelonModel):
     name = db.Column(db.String(255))
     countryCode = db.Column(db.String(255))
     farmCode = db.Column(db.String(255))
+    farm_id = db.Column(db.Integer, db.ForeignKey('farm.id'))
 
     def serialize(self):
         return {
@@ -48,4 +49,5 @@ def receive_before_update(mapper, connection, target):
     print('Animal will be update: ' + target.serialize())
 
 
-
+class AnimalChangelog(ChangeLog):
+    animal_id = db.Column(db.Integer, db.ForeignKey('animal.id'))
