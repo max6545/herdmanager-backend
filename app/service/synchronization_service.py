@@ -3,15 +3,23 @@ from datetime import datetime
 from flask import request
 from flask_restful import Resource
 import time
-from model.animal import Animal
+from model.animal import AnimalChangelog
+from model.watermelon_model import ChangeOperationType
+from service.synchronization.animal_synchronization import synchronize_animals
+from service.synchronization.group_synchronization import synchronize_groups
 
 synchronizedTables = ['animal', 'group', 'animal_parents', 'group_animals']
 
 
 def getDeletedObjectIds(tablename, timestamp):
     if tablename == 'animal':
-        Animal.query.filter_by(deleted=True )
-        
+        return (AnimalChangelog.query
+                .filter(
+            AnimalChangelog.action_at >= datetime.fromtimestamp(timestamp),
+            AnimalChangelog.operation == ChangeOperationType.DELETE)
+                .with_entities(
+            AnimalChangelog.watermelon_id)
+                .all())
     return []
 
 
@@ -31,6 +39,16 @@ def getChangesObject(tablename, timestamp):
     }
 
 
+def sync_table(table_name: str, param):
+    match table_name:
+        case 'animal':
+            synchronize_animals(param)
+        case 'group':
+            synchronize_groups(param)
+        case _:
+            print(f'Import for table [{table_name}] not implemented')
+
+
 class SynchronizeDB(Resource):
     @staticmethod
     # @jwt_required()
@@ -40,11 +58,11 @@ class SynchronizeDB(Resource):
         if request.args['lastPulledAt']:
             print(request.args['lastPulledAt'])
         # method returns changes since last sync
-        changesObject = {}
-        for tablename in synchronizedTables:
-            changesObject[tablename] = getChangesObject(tablename, timestamp)
+        changes_object = {}
+        for table_name in synchronizedTables:
+            changes_object[table_name] = getChangesObject(table_name, timestamp)
         response = {
-            'changes': changesObject,
+            'changes': changes_object,
             'timestamp': timestamp
         }
         print(response)
@@ -54,6 +72,11 @@ class SynchronizeDB(Resource):
     # @jwt_required()
     def post():
         # methods synchronizes backendDB with clientDB with respect to incoming changes
-        request.get_json(force=True)
-        print(request.data)
-        return None, HTTPStatus.NOT_FOUND
+        json = request.get_json(force=True)
+        if 'data' in json:
+            data = json['data']
+            for table_name in synchronizedTables:
+                if table_name in synchronizedTables:
+                    sync_table(table_name, data[table_name])
+
+        return None, HTTPStatus.OK

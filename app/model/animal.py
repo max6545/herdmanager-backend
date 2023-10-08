@@ -1,8 +1,10 @@
+import json
 from enum import Enum, auto
-
+from sqlalchemy.orm.base import NO_VALUE
 from sqlalchemy import event
 from db.database import db
-from model.watermelon_model import WatermelonModel, ChangeLog
+from model.watermelon_model import WatermelonModel, ChangeOperationType, ChangeLog
+from model.model_helper import get_changeset_json
 
 
 class AnimalType(Enum):
@@ -21,33 +23,73 @@ class Animal(WatermelonModel):
     sex = db.Column(db.String(255))
     name = db.Column(db.String(255))
     countryCode = db.Column(db.String(255))
+    born_at = db.Column(db.DateTime)
     farmCode = db.Column(db.String(255))
     farm_id = db.Column(db.Integer, db.ForeignKey('farm.id'))
 
     def serialize(self):
-        return {
+        return str({
             'id': self.id,
             'watermelon_id': self.watermelon_id,
             'earTag': self.earTag,
             'name': self.name
-        }
-
-
-@event.listens_for(Animal, 'after_insert')
-def receive_after_insert(mapper, connection, target):
-    print('CreatedAnimal')
-    print(target.serialize())
-
-
-@event.listens_for(Animal.name, 'set')
-def receive_set(target, value, oldvalue, initiator):
-    print(f"name set: {value} and id is {target.id}")
-    
-
-@event.listens_for(Animal, 'before_update')
-def receive_before_update(mapper, connection, target):
-    print('Animal will be update: ' + target.serialize())
+        })
 
 
 class AnimalChangelog(ChangeLog):
-    animal_id = db.Column(db.Integer, db.ForeignKey('animal.id'))
+    __tablename__ = 'animal_changelog'
+
+
+@event.listens_for(Animal.name, 'set')
+def receive_set(target, new_value, old_value, initiator):
+    if old_value is not NO_VALUE and target.id is not None:
+        create_changelog_update_entry(initiator.key, old_value, new_value)
+
+
+@event.listens_for(Animal.animal_type, 'set')
+def receive_set(target, new_value, old_value, initiator):
+    if old_value is not NO_VALUE and target.id is not None:
+        create_changelog_update_entry(initiator.key, old_value, new_value)
+
+
+@event.listens_for(Animal.earTag, 'set')
+def receive_set(target, new_value, oldvalue, initiator):
+    if oldvalue is not NO_VALUE and target.id is not None:
+        create_changelog_update_entry(initiator.key, oldvalue, new_value)
+
+
+@event.listens_for(Animal.sex, 'set')
+def receive_set(target, new_value, old_value, initiator):
+    if old_value is not NO_VALUE and target.id is not None:
+        create_changelog_update_entry(initiator.key, old_value, new_value)
+
+
+@event.listens_for(Animal.countryCode, 'set')
+def receive_set(target, new_value, old_value, initiator):
+    if old_value is not NO_VALUE and target.id is not None:
+        create_changelog_update_entry(initiator.key, old_value, new_value)
+
+
+@event.listens_for(Animal.farmCode, 'set')
+def receive_set(target, new_value, old_value, initiator):
+    if old_value is not NO_VALUE and target.id is not None:
+        create_changelog_update_entry(initiator.key, old_value, new_value)
+
+
+@event.listens_for(Animal.born_at, 'set')
+def receive_set(target, new_value, old_value, initiator):
+    if old_value is not NO_VALUE and target.id is not None:
+        create_changelog_update_entry(initiator.key, old_value, new_value)
+
+
+@event.listens_for(Animal, 'before_delete')
+def receive_before_delete(mapper, connection, target: Animal):
+    changelog_entry = AnimalChangelog(operation=ChangeOperationType.DELETE, watermelon_id=target.watermelon_id,
+                                      old_value=str(target.serialize()))
+    db.session.add(changelog_entry)
+
+
+def create_changelog_update_entry(watermelon_id: str, key: str, old_value: str, new_value: str):
+    changelog_entry = AnimalChangelog(operation=ChangeOperationType.UPDATE, watermelon_id=watermelon_id,
+                                      old_value=get_changeset_json(key, old_value, new_value))
+    db.session.add(changelog_entry)
