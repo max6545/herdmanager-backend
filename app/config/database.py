@@ -6,7 +6,6 @@ from model.user import User
 def initialize_db(_app, _db):
     _db.init_app(_app)
     with _app.app_context():
-        _db.drop_all()
         _db.create_all()
         if 'DEFAULT_USERNAME' in os.environ and 'DEFAULT_PASSWORD' in os.environ:
             username = os.getenv('DEFAULT_USERNAME')

@@ -1,4 +1,4 @@
-from model.watermelon_model import WatermelonModel, ChangeLog
+from model.watermelon_model import WatermelonModel, ChangeLog, ChangeOperationType
 from db.database import db
 from sqlalchemy.orm.base import NO_VALUE
 from sqlalchemy import event
@@ -15,6 +15,12 @@ class Group(WatermelonModel):
             'name': self.name
         })
 
+    def watermelon_representation(self):
+        return {
+            'id': self.watermelon_id,
+            'name': self.name
+        }
+
 
 class GroupChangelog(ChangeLog):
     __tablename__ = 'group_changelog'
@@ -23,7 +29,7 @@ class GroupChangelog(ChangeLog):
 @event.listens_for(Group.name, 'set')
 def receive_set(target, new_value, old_value, initiator):
     if old_value is not NO_VALUE and target.id is not None:
-        create_changelog_update_entry(initiator.key, old_value, new_value)
+        create_changelog_update_entry(target.watermelon_id, initiator.key, old_value, new_value)
 
 
 @event.listens_for(Group, 'before_delete')

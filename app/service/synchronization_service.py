@@ -3,48 +3,51 @@ from datetime import datetime
 from flask import request
 from flask_restful import Resource
 import time
-from model.animal import AnimalChangelog
-from model.watermelon_model import ChangeOperationType
-from service.synchronization.animal_synchronization import synchronize_animals
-from service.synchronization.group_synchronization import synchronize_groups
+from service.synchronization.animal_synchronization import synchronize_animals, get_animal_changes
+from service.synchronization.group_synchronization import synchronize_groups, get_group_changes
+from service.synchronization.group_animals_synchronization import synchronize_group_animals, get_group_animals_changes
+from service.synchronization.animal_parents_synchronization import synchronize_animal_parents, \
+    get_animal_parents_changes
 
 synchronizedTables = ['animal', 'group', 'animal_parents', 'group_animals']
 
 
-def getDeletedObjectIds(tablename, timestamp):
-    if tablename == 'animal':
-        return (AnimalChangelog.query
-                .filter(
-            AnimalChangelog.action_at >= datetime.fromtimestamp(timestamp),
-            AnimalChangelog.operation == ChangeOperationType.DELETE)
-                .with_entities(
-            AnimalChangelog.watermelon_id)
-                .all())
-    return []
+def get_all_changes(timestamp_as_datetime):
+    changes_object = {}
+    for table_name in synchronizedTables:
+        changes_object[table_name] = get_changes_object(table_name, timestamp_as_datetime)
+    return changes_object
 
 
-def getCreatedObjects(tablename, timestamp):
-    return []
-
-
-def getUpdatedObjects(tablename, timestamp):
-    return []
-
-
-def getChangesObject(tablename, timestamp):
-    return {
-        'created': getCreatedObjects(tablename, timestamp),
-        'updated': getUpdatedObjects(tablename, timestamp),
-        'deleted': getDeletedObjectIds(tablename, timestamp)
-    }
-
-
-def sync_table(table_name: str, param):
+def get_changes_object(table_name: str, timestamp_as_datetime):
     match table_name:
         case 'animal':
-            synchronize_animals(param)
+            return get_animal_changes(timestamp_as_datetime)
         case 'group':
-            synchronize_groups(param)
+            return get_group_changes(timestamp_as_datetime)
+        case 'group_animals':
+            return get_group_animals_changes(timestamp_as_datetime)
+        case 'animal_parents':
+            return get_animal_parents_changes(timestamp_as_datetime)
+        case _:
+            print(f'Changes for [{table_name}] not implemented')
+            return {
+                'created': [],
+                'updated': [],
+                'deleted': []
+            }
+
+
+def sync_table(table_name: str, table_data):
+    match table_name:
+        case 'animal':
+            synchronize_animals(table_data)
+        case 'group':
+            synchronize_groups(table_data)
+        case 'group_animals':
+            synchronize_group_animals(table_data)
+        case 'animal_parents':
+            synchronize_animal_parents(table_data)
         case _:
             print(f'Import for table [{table_name}] not implemented')
 
@@ -55,12 +58,13 @@ class SynchronizeDB(Resource):
     def get():
         timestamp = time.mktime(datetime.now().timetuple())
         print(request.args)
+        last_pulled_at = datetime.fromtimestamp(0)
         if request.args['lastPulledAt']:
             print(request.args['lastPulledAt'])
-        # method returns changes since last sync
-        changes_object = {}
-        for table_name in synchronizedTables:
-            changes_object[table_name] = getChangesObject(table_name, timestamp)
+            last_pulled_at = datetime.fromtimestamp(int(request.args['lastPulledAt']))
+        print(last_pulled_at)
+        changes_object = get_all_changes(last_pulled_at)
+
         response = {
             'changes': changes_object,
             'timestamp': timestamp
