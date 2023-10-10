@@ -6,10 +6,9 @@ from flask import request
 from flask_jwt_extended import create_access_token, jwt_required
 from flask_restful import Resource
 
-from db.database import db
-from model.user import User
-from service.parsers import user_parser
-
+from app.db.database import db
+from app.model.user import User
+from app.service.parsers import user_parser
 
 class SignupApi(Resource):
 
@@ -32,8 +31,6 @@ class LoginApi(Resource):
 
     @staticmethod
     def post():
-
-        print('vvv')
         request.get_json()
         args = user_parser.parse_args()
         logging.info(args)

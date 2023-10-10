@@ -1,8 +1,8 @@
-from model.watermelon_model import WatermelonModel, ChangeLog, ChangeOperationType
-from db.database import db
+from app.model.watermelon_model import WatermelonModel, ChangeLog, ChangeOperationType
+from app.db.database import db
 from sqlalchemy.orm.base import NO_VALUE
 from sqlalchemy import event
-from model.model_helper import get_changeset_json
+from app.model.model_helper import get_changeset_json
 
 
 class Group(WatermelonModel):
@@ -15,11 +15,19 @@ class Group(WatermelonModel):
             'name': self.name
         })
 
-    def watermelon_representation(self):
+    def watermelon_representation(self, migration_number: int = 11):
         return {
             'id': self.watermelon_id,
             'name': self.name
         }
+
+    @staticmethod
+    def create_from_json(object_json, farm_id):
+        return Group(watermelon_id=object_json['id'], name=object_json['name'], farm_id=farm_id)
+
+    def update_from_json(self, group_json):
+        if self.name != group_json['name']:
+            self.name = group_json['name']
 
 
 class GroupChangelog(ChangeLog):

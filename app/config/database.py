@@ -1,10 +1,10 @@
 import os
+from app.model.user import User
 
-from model.user import User
 
-
-def initialize_db(_app, _db):
+def initialize_db(_app, _db, _migrate):
     _db.init_app(_app)
+    _migrate.init_app(_app,_db)
     with _app.app_context():
         _db.create_all()
         if 'DEFAULT_USERNAME' in os.environ and 'DEFAULT_PASSWORD' in os.environ:

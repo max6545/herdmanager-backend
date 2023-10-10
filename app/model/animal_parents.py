@@ -1,6 +1,6 @@
 from sqlalchemy import event
-from db.database import db
-from model.watermelon_model import WatermelonModel, ChangeOperationType, ChangeLog
+from app.db.database import db
+from app.model.watermelon_model import WatermelonModel, ChangeOperationType, ChangeLog
 
 
 class AnimalParents(WatermelonModel):
@@ -15,12 +15,23 @@ class AnimalParents(WatermelonModel):
             'child_id': self.child_id
         })
 
-    def watermelon_representation(self):
-        return str({
+    def watermelon_representation(self, migration_number: int = 11):
+        return {
             'id': self.watermelon_id,
             'parent_id': self.parent_id,
             'child_id': self.child_id
-        })
+        }
+
+    @staticmethod
+    def create_from_json(object_json, farm_id):
+        return AnimalParents(watermelon_id=object_json['id'], parent_id=object_json['parent_id'],
+                             child_id=object_json['child_id'], farm_id=farm_id)
+
+    def update_from_json(self, relation_json):
+        if self.child_id != relation_json['child_id']:
+            self.child_id = relation_json['child_id']
+        if self.parent_id != relation_json['parent_id']:
+            self.parent_id = relation_json['parent_id']
 
 
 class AnimalParentsChangelog(ChangeLog):

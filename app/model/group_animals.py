@@ -1,10 +1,6 @@
-import json
-from enum import Enum, auto
-from sqlalchemy.orm.base import NO_VALUE
 from sqlalchemy import event
-from db.database import db
-from model.watermelon_model import WatermelonModel, ChangeOperationType, ChangeLog
-from model.model_helper import get_changeset_json
+from app.db.database import db
+from app.model.watermelon_model import WatermelonModel, ChangeOperationType, ChangeLog
 
 
 class GroupAnimals(WatermelonModel):
@@ -19,12 +15,23 @@ class GroupAnimals(WatermelonModel):
             'animal_id': self.animal_id
         })
 
-    def watermelon_representation(self):
-        return str({
+    def watermelon_representation(self, migration_number: int = 11):
+        return {
             'id': self.watermelon_id,
             'group_id': self.group_id,
             'animal_id': self.animal_id
-        })
+        }
+
+    @staticmethod
+    def create_from_json(object_json, farm_id):
+        return GroupAnimals(watermelon_id=object_json['id'], group_id=object_json['group_id'],
+                            animal_id=object_json['animal_id'], farm_id=farm_id)
+
+    def update_from_json(self, relation_json):
+        if self.group_id != relation_json['group_id']:
+            self.group_id = relation_json['group_id']
+        if self.animal_id != relation_json['animal_id']:
+            self.animal_id = relation_json['animal_id']
 
 
 class GroupAnimalsChangelog(ChangeLog):

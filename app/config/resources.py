@@ -2,9 +2,9 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
 
-from service.animal_service import AnimalTypeList
-from service.auth_service import SignupApi, LoginApi
-from service.synchronization_service import SynchronizeDB
+from app.service.animal_service import AnimalTypeList
+from app.service.auth_service import SignupApi, LoginApi
+from app.service.synchronization_service import SynchronizeDB
 
 
 def set_resources(_app):

@@ -1,4 +1,4 @@
-from db.database import db
+from app.db.database import db
 
 
 class Farm(db.Model):
