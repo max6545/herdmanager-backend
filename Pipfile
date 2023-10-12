@@ -9,6 +9,8 @@ flask-sqlalchemy = "*"
 flask-restful = "*"
 flask-jwt-extended = "*"
 flask-bcrypt = "*"
+gunicorn = "~=20.0"
+mysql-connector-python = "*"
 
 [dev-packages]
 
