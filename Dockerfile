@@ -11,3 +11,5 @@ RUN ["pipenv", "install"]
 ENV FLASK_APP app.py
 
 CMD [ "pipenv", "run", "gunicorn", "-w", "4", "--worker-tmp-dir", "/dev/shm", "-b", "0.0.0.0:80", "app:app" ]
+
+EXPOSE 80
