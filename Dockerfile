@@ -9,6 +9,8 @@ ENV NEXTCLOUD_PASSWORD $NC_PW
 
 
 RUN pip install pipenv
+RUN pip install --upgrade pip
+
 ENV SRC_DIR /usr/local/src/herdmanager
 
 
