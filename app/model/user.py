@@ -8,6 +8,7 @@ class User(db.Model):
     password = db.Column(db.String(2000), nullable=False, unique=True)
     mobile_devices = db.relationship('MobileDevice', backref='mobile_device')
     farm_id = db.Column(db.Integer, db.ForeignKey('farm.id'))
+
     def serialize(self):
         return {
             'id': self.id,

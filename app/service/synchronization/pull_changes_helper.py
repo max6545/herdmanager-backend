@@ -15,8 +15,10 @@ def get_pull_changes(watermelon_class: WatermelonModel, changelog_class: ChangeL
 
 def get_created_objects(class_name: WatermelonModel, timestamp_as_datetime: datetime, migration_number: int = 11):
     farm_id = User.query.filter_by(id=get_jwt_identity()).first().farm_id
-    created_relations = class_name.query.filter(class_name.created_at >= timestamp_as_datetime,
-                                                class_name.farm_id == farm_id).all()
+    created_relations = (class_name.query
+                         .filter(class_name.created_at > timestamp_as_datetime)
+                         .filter(class_name.farm_id == farm_id)
+                         .all())
     relation_array = []
     for relation in created_relations:
         relation_array.append(relation.watermelon_representation(migration_number=migration_number))
@@ -25,9 +27,11 @@ def get_created_objects(class_name: WatermelonModel, timestamp_as_datetime: date
 
 def get_updated_objects(class_name: WatermelonModel, timestamp_as_datetime: datetime, migration_number: int = 11):
     farm_id = User.query.filter_by(id=get_jwt_identity()).first().farm_id
-    updated_relations = class_name.query.filter(class_name.last_changed_at >= timestamp_as_datetime,
-                                                class_name.created_at <= timestamp_as_datetime,
-                                                class_name.farm_id == farm_id).all()
+    updated_relations = (class_name.query
+                         .filter(class_name.last_changed_at >= timestamp_as_datetime)
+                         .filter(class_name.created_at < timestamp_as_datetime)
+                         .filter(class_name.farm_id == farm_id)
+                         .all())
     relation_array = []
     for relation in updated_relations:
         relation_array.append(relation.watermelon_representation(migration_number=migration_number))

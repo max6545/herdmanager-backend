@@ -2,14 +2,15 @@ from app.model.watermelon_model import WatermelonModel
 from app.db.database import db
 from flask_jwt_extended import get_jwt_identity
 from app.model.user import User
+from datetime import datetime
 
 
-def synchronize(watermelon_class: WatermelonModel, changes_json):
+def synchronize(watermelon_class: WatermelonModel, changes_json, last_pulled_at: datetime):
     created = changes_json['created']
     updated = changes_json['updated']
     deleted = changes_json['deleted']
     for object_json in created:
-        create_object(watermelon_class, object_json)
+        create_object(watermelon_class, object_json, last_pulled_at)
     for object_json in updated:
         update_object(watermelon_class, object_json)
     for object_id in deleted:
@@ -17,9 +18,10 @@ def synchronize(watermelon_class: WatermelonModel, changes_json):
     db.session.commit()
 
 
-def create_object(watermelon_class: WatermelonModel, object_json):
+def create_object(watermelon_class: WatermelonModel, object_json,last_pulled_at:datetime):
     new_object = watermelon_class.create_from_json(object_json=object_json,
-                                                   farm_id=User.query.filter_by(id=get_jwt_identity()).first().farm_id)
+                                                   farm_id=User.query.filter_by(id=get_jwt_identity()).first().farm_id,
+                                                   last_pulled_at=last_pulled_at)
     db.session.add(new_object)
 
 

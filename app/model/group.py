@@ -22,8 +22,9 @@ class Group(WatermelonModel):
         }
 
     @staticmethod
-    def create_from_json(object_json, farm_id):
-        return Group(watermelon_id=object_json['id'], name=object_json['name'], farm_id=farm_id)
+    def create_from_json(object_json, farm_id, last_pulled_at):
+        return Group(watermelon_id=object_json['id'], name=object_json['name'], farm_id=farm_id,
+                     created_at=last_pulled_at)
 
     def update_from_json(self, group_json):
         if self.name != group_json['name']:

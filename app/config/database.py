@@ -17,6 +17,10 @@ def initialize_db(_app, _db, _migrate):
             password = 'admin'
         user = User.query.filter_by(name=username).first()
         if user is None:
+            # create new admin if default username/pw is changed and delete all users in db
+            default_admin_users = User.query.filter_by(name='admin').first()
+            if default_admin_users is not None:
+                _db.session.delete(default_admin_users)
             user = User.create_user(username, password)
             _db.session.add(user)
             _db.session.commit()

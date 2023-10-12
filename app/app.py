@@ -12,6 +12,7 @@ from flask_migrate import Migrate
 dictConfig(logging_configuration)
 
 app = Flask(__name__)
+logger = app.logger
 set_application_config(app)
 migrate = Migrate(app, db)
 initialize_db(app, db, migrate)

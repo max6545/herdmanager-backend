@@ -5,6 +5,7 @@ from app.model.group import Group, GroupChangelog
 from app.model.animal_parents import AnimalParents, AnimalParentsChangelog
 from app.model.group_animals import GroupAnimals, GroupAnimalsChangelog
 from app.service.synchronization.push_changes_helper import synchronize
+from app.model.model_helper import get_epoch_from_datetime
 
 table_class_mapping = {
     'animal': {
@@ -26,14 +27,14 @@ table_class_mapping = {
 }
 
 
-def sync_data(sync_json):
+def sync_data(sync_json, last_pulled_at:datetime):
     for table_name in table_class_mapping.keys():
-        sync_table(table_name, sync_json[table_name])
+        sync_table(table_name, sync_json[table_name], last_pulled_at)
 
 
-def sync_table(table_name: str, table_data):
+def sync_table(table_name: str, table_data, last_pulled_at:datetime):
     if table_class_mapping[table_name]:
-        synchronize(table_class_mapping[table_name]['model'], table_data)
+        synchronize(table_class_mapping[table_name]['model'], table_data,last_pulled_at)
     else:
         print(f'Import for table [{table_name}] not implemented')
 
@@ -60,6 +61,9 @@ def get_initial_changes():
 
 
 def get_all_changes(timestamp_as_datetime, migration_number: int = 11):
+    print('LASTPULL_AT')
+    print(timestamp_as_datetime)
+    print(get_epoch_from_datetime(timestamp_as_datetime))
     changes_object = {}
     for table_name in table_class_mapping.keys():
         changes_object[table_name] = get_changes_object(table_name, timestamp_as_datetime, migration_number)

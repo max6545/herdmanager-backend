@@ -3,8 +3,7 @@ from sqlalchemy.orm.base import NO_VALUE
 from sqlalchemy import event
 from app.db.database import db
 from app.model.watermelon_model import WatermelonModel, ChangeOperationType, ChangeLog
-from app.model.model_helper import get_changeset_json
-import time
+from app.model.model_helper import get_changeset_json, get_epoch_from_datetime, get_datetime_from_epoch
 from datetime import datetime
 
 
@@ -45,18 +44,19 @@ class Animal(WatermelonModel):
             'name': self.name,
             'country_code': self.country_code,
             'farm_code': self.farm_code,
-            'born_at': time.mktime(self.born_at.timetuple())
+            'born_at': get_epoch_from_datetime(self.born_at)
         }
         if migration_number > 11:
             object_11 = object_11 | {'description': self.description}
         return object_11
 
     @staticmethod
-    def create_from_json(object_json, farm_id):
+    def create_from_json(object_json, farm_id, last_pulled_at):
         return Animal(watermelon_id=object_json['id'], sex=object_json['sex'], animal_type=object_json['animal_type'],
-                      ear_tag=object_json['ear_tag'], born_at=datetime.fromtimestamp(object_json['born_at'] / 1000),
+                      ear_tag=object_json['ear_tag'], born_at=get_datetime_from_epoch(object_json['born_at']),
                       farm_code=object_json['farm_code'], country_code=object_json['country_code'],
-                      name=object_json['name'], description=object_json['description'], farm_id=farm_id)
+                      name=object_json['name'], description=object_json['description'], farm_id=farm_id,
+                      created_at=last_pulled_at)
 
     def update_from_json(self, animal_json):
         if self.sex != animal_json['sex']:
@@ -65,8 +65,8 @@ class Animal(WatermelonModel):
             self.animal_type = animal_json['animal_type']
         if self.ear_tag != animal_json['ear_tag']:
             self.ear_tag = animal_json['ear_tag']
-        if self.born_at != datetime.fromtimestamp(animal_json['born_at'] / 1000):
-            self.born_at = datetime.fromtimestamp(animal_json['born_at'] / 1000)
+        if self.born_at != get_datetime_from_epoch(animal_json['born_at']):
+            self.born_at = get_datetime_from_epoch(animal_json['born_at'])
         if self.country_code != animal_json['country_code']:
             self.country_code = animal_json['country_code']
         if self.farm_code != animal_json['farm_code']:
