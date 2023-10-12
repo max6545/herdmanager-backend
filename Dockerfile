@@ -1,9 +1,9 @@
 FROM python:3.10-slim
 
-ARG nextcloud_host
+ARG NC_HOST
 #ARG nextcloud_user
 #ARG nextcloud_password
-ENV NEXTCLOUD_HOST $nextcloud_host
+ENV NEXTCLOUD_HOST $NC_HOST
 RUN ls && echo $NEXTCLOUD_HOST
 #ENV NEXTCLOUD_USER nextcloud_user
 #ENV NEXTCLOUD_PASSWORD nextcloud_password
