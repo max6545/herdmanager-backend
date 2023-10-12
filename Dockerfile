@@ -1,15 +1,20 @@
 FROM python:3.10-slim
 
-WORKDIR /usr/src/app
-COPY . .
+RUN pip install pipenv
 
+ENV SRC_DIR /usr/local/src/herdmanager
 
-RUN ["pip3", "install", "pipenv"]
-RUN ["pipenv", "install"]
+WORKDIR ${SRC_DIR}
 
+COPY Pipfile Pipfile.lock ${SRC_DIR}/
 
+RUN pipenv install --system --clear
+
+COPY ./ ${SRC_DIR}/
+
+#WORKDIR ${SRC_DIR}
+# CMD ["flask", "run", "-h", "0.0.0.0"]
 ENV FLASK_APP app/app.py
 
-CMD [ "pipenv", "run", "gunicorn", "-w", "4", "--worker-tmp-dir", "/dev/shm", "-b", "0.0.0.0:80", "app:app" ]
-
-EXPOSE 80
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app.app:app"]
+EXPOSE 5000

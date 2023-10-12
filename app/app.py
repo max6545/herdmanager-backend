@@ -18,5 +18,4 @@ initialize_db(app, db, migrate)
 set_resources(app)
 
 if __name__ == '__main__':
-    logging.getLogger('flask_cors').level = logging.DEBUG
     app.run(host='0.0.0.0', debug=True)
