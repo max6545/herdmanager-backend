@@ -1,20 +1,27 @@
 FROM python:3.10-slim
 
-RUN pip install pipenv
+ARG nextcloud_host
+#ARG nextcloud_user
+#ARG nextcloud_password
+ENV NEXTCLOUD_HOST $nextcloud_host
+RUN ls && echo $NEXTCLOUD_HOST
+#ENV NEXTCLOUD_USER nextcloud_user
+#ENV NEXTCLOUD_PASSWORD nextcloud_password
 
-ENV SRC_DIR /usr/local/src/herdmanager
 
-WORKDIR ${SRC_DIR}
+#RUN pip install pipenv
+#ENV SRC_DIR /usr/local/src/herdmanager
 
-COPY Pipfile Pipfile.lock ${SRC_DIR}/
-
-RUN pipenv install --system --clear
-
-COPY ./ ${SRC_DIR}/
 
 #WORKDIR ${SRC_DIR}
-# CMD ["flask", "run", "-h", "0.0.0.0"]
-ENV FLASK_APP app/app.py
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app.app:app"]
-EXPOSE 5000
+#COPY Pipfile Pipfile.lock ${SRC_DIR}/
+
+#RUN pipenv install --system --clear
+
+#COPY ./ ${SRC_DIR}/
+
+#ENV FLASK_APP app/app.py
+
+#CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app.app:app"]
+#EXPOSE 5000
