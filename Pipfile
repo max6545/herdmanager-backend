@@ -12,6 +12,7 @@ flask-bcrypt = "*"
 mysql-connector-python = "*"
 flask-migrate="*"
 gunicorn="*"
+pyncclient = "*"
 
 [dev-packages]
 

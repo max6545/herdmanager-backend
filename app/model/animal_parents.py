@@ -25,7 +25,8 @@ class AnimalParents(WatermelonModel):
     @staticmethod
     def create_from_json(object_json, farm_id, last_pulled_at):
         return AnimalParents(watermelon_id=object_json['id'], parent_id=object_json['parent_id'],
-                             child_id=object_json['child_id'], farm_id=farm_id, created_at=last_pulled_at)
+                             child_id=object_json['child_id'], farm_id=farm_id, created_at=last_pulled_at,
+                             last_changed_at=last_pulled_at)
 
     def update_from_json(self, relation_json):
         if self.child_id != relation_json['child_id']:

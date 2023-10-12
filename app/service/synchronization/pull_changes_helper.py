@@ -28,8 +28,8 @@ def get_created_objects(class_name: WatermelonModel, timestamp_as_datetime: date
 def get_updated_objects(class_name: WatermelonModel, timestamp_as_datetime: datetime, migration_number: int = 11):
     farm_id = User.query.filter_by(id=get_jwt_identity()).first().farm_id
     updated_relations = (class_name.query
-                         .filter(class_name.last_changed_at >= timestamp_as_datetime)
-                         .filter(class_name.created_at < timestamp_as_datetime)
+                         .filter(class_name.last_changed_at > timestamp_as_datetime)
+                         .filter(class_name.created_at <= timestamp_as_datetime)
                          .filter(class_name.farm_id == farm_id)
                          .all())
     relation_array = []

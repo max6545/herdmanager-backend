@@ -56,7 +56,7 @@ class Animal(WatermelonModel):
                       ear_tag=object_json['ear_tag'], born_at=get_datetime_from_epoch(object_json['born_at']),
                       farm_code=object_json['farm_code'], country_code=object_json['country_code'],
                       name=object_json['name'], description=object_json['description'], farm_id=farm_id,
-                      created_at=last_pulled_at)
+                      created_at=last_pulled_at, last_changed_at=last_pulled_at)
 
     def update_from_json(self, animal_json):
         if self.sex != animal_json['sex']:
