@@ -12,6 +12,8 @@ if __name__ == '__main__':
             print('no backup exists create new db on gunicorn start')
         else:
             print(f'fetch last backup in list[{backup_list[-1]}]')
-            nc.get_file(backup_list[-1].path, '/usr/local/var/app.app-instance/farminv.db')
+            backup_dir = '/usr/local/var/app.app-instance'
+            os.mkdir(backup_dir)
+            nc.get_file(backup_list[-1].path, backup_dir + '/farminv.db')
     except:
         raise FileNotFoundError
