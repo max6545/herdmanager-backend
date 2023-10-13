@@ -30,7 +30,7 @@ class AnimalTypeList(Resource):
                 app.logger.warning('backup directory on NEXTCLOUD does not exist creating...')
                 nc.mkdir(backup_dir)
             nc.put_file(f'{backup_dir}/{datetime.now().strftime("%Y_%m_%d__%H_%M_%S")}_backup.db',
-                        '../instance/farminv.db')
+                        '/usr/local/src/herdmanager/instance/farminv.db')
 
         else:
             app.logger.warning('Environment variables for backup on nextcloud not set')
