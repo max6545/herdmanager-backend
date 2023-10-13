@@ -10,7 +10,7 @@ class AnimalTypeList(Resource):
     @staticmethod
     def get():
         app.logger.info('check animals')
-        for f in os.listdir():
+        for f in os.listdir('app'):
             app.logger.error(f)
         if 'NEXTCLOUD_HOST' in os.environ and 'NEXTCLOUD_USER' in os.environ and 'NEXTCLOUD_PASSWORD' in os.environ:
             nc = nextcloud_client.Client(os.environ.get('NEXTCLOUD_HOST'))
