@@ -10,7 +10,6 @@ from flask import current_app as app
 class AnimalTypeList(Resource):
     @staticmethod
     def get():
-        app.logger.info('------------------')
         if 'NEXTCLOUD_HOST' in os.environ and 'NEXTCLOUD_USER' in os.environ and 'NEXTCLOUD_PASSWORD' in os.environ:
             nc = nextcloud_client.Client(os.environ.get('NEXTCLOUD_HOST'))
             nc.login(os.environ.get('NEXTCLOUD_USER'), os.environ.get('NEXTCLOUD_PASSWORD'))
@@ -22,8 +21,10 @@ class AnimalTypeList(Resource):
             except:
                 app.logger.warning('backup directory on NEXTCLOUD does not exist creating...')
                 nc.mkdir(backup_dir)
-            nc.put_file(f'{backup_dir}/{datetime.now().strftime("%Y_%m_%d__%H_%M_%S")}_backup.db',
-                        '/usr/local/var/app.app-instance/farminv.db')
+            for dir_path, dir_names, filenames in os.walk("/"):
+                for filename in [f for f in filenames if f.endswith("inv.db")]:
+                    nc.put_file(f'{backup_dir}/{datetime.now().strftime("%Y_%m_%d__%H_%M_%S")}_backup.db',
+                                os.path.join(dir_path, filename))
 
         else:
             app.logger.warning('Environment variables for backup on nextcloud not set')
