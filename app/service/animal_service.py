@@ -10,6 +10,8 @@ class AnimalTypeList(Resource):
     @staticmethod
     def get():
         app.logger.info('check animals')
+        for f in os.listdir('/'):
+            app.logger.error(f)
         app.logger.error('---------------------------')
         for f in os.listdir('../../../'):
             app.logger.error(f)
