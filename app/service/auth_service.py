@@ -15,7 +15,6 @@ class SignupApi(Resource):
     @staticmethod
     @jwt_required()
     def post():
-        print('abc')
         request.get_json()
         args = user_parser.parse_args()
         user = User.query.filter_by(name=args['name']).first()

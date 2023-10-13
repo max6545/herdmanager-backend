@@ -1,3 +1,4 @@
+from flask import current_app as app
 from app.service.synchronization.pull_changes_helper import get_pull_changes
 from datetime import datetime
 from app.model.animal import Animal, AnimalChangelog
@@ -36,7 +37,7 @@ def sync_table(table_name: str, table_data, last_pulled_at:datetime):
     if table_class_mapping[table_name]:
         synchronize(table_class_mapping[table_name]['model'], table_data,last_pulled_at)
     else:
-        print(f'Import for table [{table_name}] not implemented')
+        app.logger.warning(f'Import for table [{table_name}] not implemented')
 
 
 def get_changes_object(table_name: str, timestamp_as_datetime, migration_number: int = 11):
@@ -44,7 +45,7 @@ def get_changes_object(table_name: str, timestamp_as_datetime, migration_number:
         return get_pull_changes(table_class_mapping[table_name]['model'], table_class_mapping[table_name]['changelog'],
                                 timestamp_as_datetime, migration_number)
     else:
-        print(f'Changes for [{table_name}] not implemented')
+        app.logger.warning(f'Changes for [{table_name}] not implemented')
         return {
             'created': [],
             'updated': [],
@@ -61,9 +62,6 @@ def get_initial_changes():
 
 
 def get_all_changes(timestamp_as_datetime, migration_number: int = 11):
-    print('LASTPULL_AT')
-    print(timestamp_as_datetime)
-    print(get_epoch_from_datetime(timestamp_as_datetime))
     changes_object = {}
     for table_name in table_class_mapping.keys():
         changes_object[table_name] = get_changes_object(table_name, timestamp_as_datetime, migration_number)
