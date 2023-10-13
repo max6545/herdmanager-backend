@@ -10,14 +10,10 @@ class AnimalTypeList(Resource):
     @staticmethod
     def get():
         app.logger.info('check animals')
-        for f in os.listdir('/'):
-            app.logger.error(f)
-        app.logger.error('---------------------------')
-        for f in os.listdir('../../../'):
-            app.logger.error(f)
-        app.logger.error('---------------------------')
-        for f in os.listdir('../../../../'):
-            app.logger.error(f)
+        for dirpath, dirnames, filenames in os.walk("/"):
+            for filename in [f for f in filenames if f.endswith(".db")]:
+                app.logger.error(os.path.join(dirpath, filename))
+        app.logger.info('------------------')
         if 'NEXTCLOUD_HOST' in os.environ and 'NEXTCLOUD_USER' in os.environ and 'NEXTCLOUD_PASSWORD' in os.environ:
             nc = nextcloud_client.Client(os.environ.get('NEXTCLOUD_HOST'))
             nc.login(os.environ.get('NEXTCLOUD_USER'), os.environ.get('NEXTCLOUD_PASSWORD'))
