@@ -13,7 +13,7 @@ if __name__ == '__main__':
         else:
             print(f'fetch last backup in list[{backup_list[-1]}]')
             backup_dir = '/usr/local/var/app.app-instance'
-            os.mkdir(backup_dir)
+            os.makedirs(backup_dir)
             nc.get_file(backup_list[-1].path, backup_dir + '/farminv.db')
     except:
         raise FileNotFoundError
