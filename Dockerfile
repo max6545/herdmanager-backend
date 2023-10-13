@@ -17,9 +17,9 @@ ENV SRC_DIR /usr/local/src/herdmanager
 WORKDIR ${SRC_DIR}
 
 COPY Pipfile Pipfile.lock ${SRC_DIR}/
-
+COPY scripts ${SRC_DIR}/scripts
 RUN pipenv install --system --clear
-
+RUN python scripts/download_backup.py
 COPY ./ ${SRC_DIR}/
 
 ENV FLASK_APP app/app.py

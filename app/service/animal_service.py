@@ -23,6 +23,7 @@ class AnimalTypeList(Resource):
                 nc.mkdir(backup_dir)
             for dir_path, dir_names, filenames in os.walk("/"):
                 for filename in [f for f in filenames if f.endswith("inv.db")]:
+                    # normal path : /usr/local/var/app.app-instance/farminv.db
                     nc.put_file(f'{backup_dir}/{datetime.now().strftime("%Y_%m_%d__%H_%M_%S")}_backup.db',
                                 os.path.join(dir_path, filename))
 
