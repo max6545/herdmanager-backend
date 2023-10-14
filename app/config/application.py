@@ -25,9 +25,11 @@ def set_application_config(_app):
 def get_latest_nc_backup(_app):
     _app.logger.info('start fetching backup')
     nc = nextcloud_client.Client(os.environ.get('NEXTCLOUD_HOST'))
+    _app.logger.info('1-----------')
     nc.login(os.environ.get('NEXTCLOUD_USER'), os.environ.get('NEXTCLOUD_PASSWORD'))
-
+    _app.logger.info('2-----------')
     backup_dir = 'farminv-backup-server'
+    _app.logger.info('3-----------')
     try:
         backup_list = nc.list(backup_dir)
         if len(backup_list) == 0:
