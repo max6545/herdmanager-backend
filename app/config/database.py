@@ -1,8 +1,11 @@
 import os
 from app.model.user import User
-
+import nextcloud_client
 
 def initialize_db(_app, _db, _migrate):
+    if 'IN_DOCKER_ENV' in os.environ:
+        get_latest_nc_backup(_app)
+
     _db.init_app(_app)
     _migrate.init_app(_app,_db)
     with _app.app_context():
@@ -25,3 +28,24 @@ def initialize_db(_app, _db, _migrate):
             _db.session.add(user)
             _db.session.commit()
             _app.logger.info('create default user{}'.format(username))
+
+
+def get_latest_nc_backup(_app):
+    _app.logger.info('start fetching backup')
+    nc = nextcloud_client.Client(os.environ.get('NEXTCLOUD_HOST'))
+    _app.logger.info('1-----------')
+    nc.login(os.environ.get('NEXTCLOUD_USER'), os.environ.get('NEXTCLOUD_PASSWORD'))
+    _app.logger.info('2-----------')
+    backup_dir = 'farminv-backup-server'
+    _app.logger.info('3-----------')
+    try:
+        backup_list = nc.list(backup_dir)
+        if len(backup_list) == 0:
+            _app.logger.info('no backup exists create new db on gunicorn start')
+        else:
+            _app.logger.info(f'fetch last backup in list[{backup_list[-1]}]')
+            backup_dir = '/usr/local/var/app.app-instance'
+            os.mkdir(backup_dir)
+            nc.get_file(backup_list[-1].path, backup_dir + '/farminv.db')
+    except:
+        _app.logger.error('Cant fetch last backup')
