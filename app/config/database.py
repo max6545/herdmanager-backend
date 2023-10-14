@@ -45,7 +45,8 @@ def get_latest_nc_backup(_app):
         else:
             _app.logger.info(f'fetch last backup in list[{backup_list[-1]}]')
             backup_dir = '/usr/local/var/app.app-instance'
-            os.mkdir(backup_dir)
+            os.makedirs(backup_dir)
             nc.get_file(backup_list[-1].path, backup_dir + '/farminv.db')
+        _app.logger.info(f'fetch db ok')
     except:
         _app.logger.error('Cant fetch last backup')
