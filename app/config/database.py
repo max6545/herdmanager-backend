@@ -2,12 +2,13 @@ import os
 from app.model.user import User
 import nextcloud_client
 
+
 def initialize_db(_app, _db, _migrate):
     if 'IN_DOCKER_ENV' in os.environ:
         get_latest_nc_backup(_app)
 
     _db.init_app(_app)
-    _migrate.init_app(_app,_db)
+    _migrate.init_app(_app, _db)
     with _app.app_context():
         _db.create_all()
         if 'DEFAULT_USERNAME' in os.environ and 'DEFAULT_PASSWORD' in os.environ:
@@ -27,9 +28,9 @@ def initialize_db(_app, _db, _migrate):
             user = User.create_user(username, password)
             _db.session.add(user)
             _db.session.commit()
-            _app.logger.info(f'create default user{username}')
+            _app.logger.info(f'create default user [{username}]')
         else:
-            _app.logger.info(f'defaultuser already exists{username}')
+            _app.logger.info(f'defaultuser already exists [{username}]')
 
 
 def get_latest_nc_backup(_app):
@@ -42,7 +43,7 @@ def get_latest_nc_backup(_app):
         if len(backup_list) == 0:
             _app.logger.info('no backup exists create new db on gunicorn start')
         else:
-            _app.logger.info(f'fetch last backup in list[{backup_list[-1]}]')
+            _app.logger.info(f'fetch last backup in list[{backup_list[-1].path}]')
             backup_dir = '/usr/local/var/app.app-instance'
             os.makedirs(backup_dir)
             nc.get_file(backup_list[-1].path, backup_dir + '/farminv.db')
