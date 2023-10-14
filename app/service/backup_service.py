@@ -31,6 +31,6 @@ class BackupDB(Resource):
 
             else:
                 app.logger.warning('Environment variables for backup on nextcloud not set')
-            return jsonify({'message': f'Backup has been created on nextcloud [{backup_name}]'}), HTTPStatus.CREATED
+            return {'message': f'Backup has been created on nextcloud [{backup_name}]'}, HTTPStatus.CREATED
         except:
-            return jsonify({'error': 'An error occured during backup creation'}), HTTPStatus.INTERNAL_SERVER_ERROR
+            return {'error': 'An error occured during backup creation'}, HTTPStatus.INTERNAL_SERVER_ERROR
