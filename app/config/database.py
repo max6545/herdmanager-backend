@@ -27,17 +27,16 @@ def initialize_db(_app, _db, _migrate):
             user = User.create_user(username, password)
             _db.session.add(user)
             _db.session.commit()
-            _app.logger.info('create default user{}'.format(username))
+            _app.logger.info(f'create default user{username}')
+        else:
+            _app.logger.info(f'defaultuser already exists{username}')
 
 
 def get_latest_nc_backup(_app):
     _app.logger.info('start fetching backup')
     nc = nextcloud_client.Client(os.environ.get('NEXTCLOUD_HOST'))
-    _app.logger.info('1-----------')
     nc.login(os.environ.get('NEXTCLOUD_USER'), os.environ.get('NEXTCLOUD_PASSWORD'))
-    _app.logger.info('2-----------')
     backup_dir = 'farminv-backup-server'
-    _app.logger.info('3-----------')
     try:
         backup_list = nc.list(backup_dir)
         if len(backup_list) == 0:
