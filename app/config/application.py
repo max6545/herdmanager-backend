@@ -12,7 +12,7 @@ def set_application_config(_app):
     # if no mysql_config is set -> sqlite
     else:
         _app.logger.info('Application using SQLite DB')
-        if os.environ['IN_DOCKER_ENV']:
+        if 'IN_DOCKER_ENV' in os.environ:
             get_latest_nc_backup(_app)
         _app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///farminv.db'
     if 'JWT_KEY' in os.environ:
