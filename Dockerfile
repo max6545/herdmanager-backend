@@ -6,7 +6,7 @@ ARG NC_PW
 ENV NEXTCLOUD_HOST $NC_HOST
 ENV NEXTCLOUD_USER $NC_USER
 ENV NEXTCLOUD_PASSWORD $NC_PW
-
+ENV IN_DOCKER_ENV Yes
 
 RUN pip install pipenv
 RUN pip install --upgrade pip
@@ -17,9 +17,7 @@ ENV SRC_DIR /usr/local/src/herdmanager
 WORKDIR ${SRC_DIR}
 
 COPY Pipfile Pipfile.lock ${SRC_DIR}/
-COPY scripts ${SRC_DIR}/scripts
 RUN pipenv install --system --clear
-RUN python scripts/download_backup.py
 COPY ./ ${SRC_DIR}/
 
 ENV FLASK_APP app/app.py

@@ -1,4 +1,6 @@
 import os
+import nextcloud_client
+from flask import current_app as app
 
 
 def set_application_config(_app):
@@ -11,9 +13,29 @@ def set_application_config(_app):
     # if no mysql_config is set -> sqlite
     else:
         _app.logger.info('Application using SQLite DB')
+        if os.environ['IN_DOCKER_ENV']:
+            get_latest_nc_backup()
         _app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///farminv.db'
     if 'JWT_KEY' in os.environ:
         _app.config['JWT_SECRET_KEY'] = os.getenv('JWT_KEY')
     else:
         _app.logger.warning('JWT_KEY not set. The application is insecure')
         _app.config['JWT_SECRET_KEY'] = 'insecureDefaultKey'
+
+
+def get_latest_nc_backup():
+    nc = nextcloud_client.Client(os.environ.get('NEXTCLOUD_HOST'))
+    nc.login(os.environ.get('NEXTCLOUD_USER'), os.environ.get('NEXTCLOUD_PASSWORD'))
+
+    backup_dir = 'farminv-backup-server'
+    try:
+        backup_list = nc.list(backup_dir)
+        if len(backup_list) == 0:
+            app.logger.info('no backup exists create new db on gunicorn start')
+        else:
+            app.logger.info(f'fetch last backup in list[{backup_list[-1]}]')
+            backup_dir = '/usr/local/var/app.app-instance'
+            os.mkdir(backup_dir)
+            nc.get_file(backup_list[-1].path, backup_dir + '/farminv.db')
+    except:
+        app.logger.error('Cant fetch last backup')
