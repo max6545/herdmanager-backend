@@ -26,6 +26,10 @@ class Animal(WatermelonModel):
     born_at = db.Column(db.DateTime)
     farm_code = db.Column(db.String(255))
     description = db.Column(db.Text())
+    rejected_at = db.Column(db.DateTime)
+    rejected_reason = db.Column(db.Text())
+    rejected_info = db.Column(db.Text())
+    lot_id = db.Column(db.Text())
 
     def serialize(self):
         return str({
@@ -48,17 +52,33 @@ class Animal(WatermelonModel):
         }
         if migration_number > 11:
             object_11 = object_11 | {'description': self.description}
+        if migration_number > 12:
+            object_11 = object_11 | {'rejected_at': get_epoch_from_datetime(self.rejected_at),
+                                     'rejected_reason': self.rejected_reason,
+                                     'rejected_info': self.rejected_info,
+                                     'lot_id': self.lot_id}
         return object_11
 
     @staticmethod
-    def create_from_json(object_json, farm_id, last_pulled_at):
-        return Animal(watermelon_id=object_json['id'], sex=object_json['sex'], animal_type=object_json['animal_type'],
-                      ear_tag=object_json['ear_tag'], born_at=get_datetime_from_epoch(object_json['born_at']),
-                      farm_code=object_json['farm_code'], country_code=object_json['country_code'],
-                      name=object_json['name'], description=object_json['description'], farm_id=farm_id,
-                      created_at=last_pulled_at, last_changed_at=last_pulled_at)
+    def create_from_json(object_json, farm_id, last_pulled_at, migration_number: int = 11):
+        animal = Animal(object_json=object_json, farm_id=farm_id, last_pulled_at=last_pulled_at)
+        animal.sex = object_json['sex']
+        animal.animal_type = object_json['animal_type']
+        animal.ear_tag = object_json['ear_tag']
+        animal.born_at = get_datetime_from_epoch(object_json['born_at'])
+        animal.farm_code = object_json['farm_code']
+        animal.country_code = object_json['country_code']
+        animal.name = object_json['name']
+        if migration_number > 11:
+            animal.description = object_json['description']
+        if migration_number > 12:
+            animal.rejected_at = get_datetime_from_epoch(object_json['rejected_at'])
+            animal.rejected_reason = object_json['rejected_reason']
+            animal.rejected_info = object_json['rejected_info']
+            animal.lot_id = object_json['lot_id']
+        return animal
 
-    def update_from_json(self, animal_json):
+    def update_from_json(self, animal_json, migration_number: int = 11):
         if self.sex != animal_json['sex']:
             self.sex = animal_json['sex']
         if self.animal_type != animal_json['animal_type']:
@@ -73,12 +93,46 @@ class Animal(WatermelonModel):
             self.farm_code = animal_json['farm_code']
         if self.name != animal_json['name']:
             self.name = animal_json['name']
-        if self.description != animal_json['description']:
-            self.description = animal_json['description']
+        if migration_number > 11:
+            if self.description != animal_json['description']:
+                self.description = animal_json['description']
+        if migration_number > 12:
+            if self.rejected_at != get_datetime_from_epoch(animal_json['rejected_at']):
+                self.rejected_at = get_datetime_from_epoch(animal_json['rejected_at'])
+            if self.rejected_reason != animal_json['rejected_reason']:
+                self.rejected_reason = animal_json['rejected_reason']
+            if self.rejected_info != animal_json['rejected_info']:
+                self.rejected_info = animal_json['rejected_info']
+            if self.lot_id != animal_json['lot_id']:
+                self.lot_id = animal_json['lot_id']
 
 
 class AnimalChangelog(ChangeLog):
     __tablename__ = 'animal_changelog'
+
+
+@event.listens_for(Animal.lot_id, 'set')
+def receive_set(target, new_value, old_value, initiator):
+    if old_value is not NO_VALUE and target.id is not None:
+        create_changelog_update_entry(target.id, initiator.key, str(old_value), str(new_value))
+
+
+@event.listens_for(Animal.rejected_at, 'set')
+def receive_set(target, new_value, old_value, initiator):
+    if old_value is not NO_VALUE and target.id is not None:
+        create_changelog_update_entry(target.id, initiator.key, str(old_value), str(new_value))
+
+
+@event.listens_for(Animal.rejected_reason, 'set')
+def receive_set(target, new_value, old_value, initiator):
+    if old_value is not NO_VALUE and target.id is not None:
+        create_changelog_update_entry(target.watermelon_id, initiator.key, old_value, new_value)
+
+
+@event.listens_for(Animal.rejected_info, 'set')
+def receive_set(target, new_value, old_value, initiator):
+    if old_value is not NO_VALUE and target.id is not None:
+        create_changelog_update_entry(target.watermelon_id, initiator.key, old_value, new_value)
 
 
 @event.listens_for(Animal.name, 'set')

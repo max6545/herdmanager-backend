@@ -23,12 +23,13 @@ class GroupAnimals(WatermelonModel):
         }
 
     @staticmethod
-    def create_from_json(object_json, farm_id, last_pulled_at):
-        return GroupAnimals(watermelon_id=object_json['id'], group_id=object_json['group_id'],
-                            animal_id=object_json['animal_id'], farm_id=farm_id, created_at=last_pulled_at,
-                            last_changed_at=last_pulled_at)
+    def create_from_json(object_json, farm_id, last_pulled_at, migration_number: int = 11):
+        group_animals = GroupAnimals(object_json=object_json, farm_id=farm_id, last_pulled_at=last_pulled_at)
+        group_animals.animal_id = object_json['animal_id']
+        group_animals.group_id = object_json['group_id']
+        return group_animals
 
-    def update_from_json(self, relation_json):
+    def update_from_json(self, relation_json, migration_number: int = 11):
         if self.group_id != relation_json['group_id']:
             self.group_id = relation_json['group_id']
         if self.animal_id != relation_json['animal_id']:

@@ -23,12 +23,13 @@ class AnimalParents(WatermelonModel):
         }
 
     @staticmethod
-    def create_from_json(object_json, farm_id, last_pulled_at):
-        return AnimalParents(watermelon_id=object_json['id'], parent_id=object_json['parent_id'],
-                             child_id=object_json['child_id'], farm_id=farm_id, created_at=last_pulled_at,
-                             last_changed_at=last_pulled_at)
+    def create_from_json(object_json, farm_id, last_pulled_at, migration_number: int = 11):
+        animal_parents = AnimalParents(object_json=object_json, farm_id=farm_id,last_pulled_at=last_pulled_at)
+        animal_parents.parent_id = object_json['parent_id']
+        animal_parents.child_id = object_json['child_id']
+        return animal_parents
 
-    def update_from_json(self, relation_json):
+    def update_from_json(self, relation_json, migration_number: int = 11):
         if self.child_id != relation_json['child_id']:
             self.child_id = relation_json['child_id']
         if self.parent_id != relation_json['parent_id']:

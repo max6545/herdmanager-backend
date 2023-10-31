@@ -5,7 +5,7 @@ from sqlalchemy import event
 from app.model.model_helper import get_changeset_json
 
 
-class Group(WatermelonModel):
+class Lot(WatermelonModel):
     name = db.Column(db.String(255))
 
     def serialize(self):
@@ -23,33 +23,33 @@ class Group(WatermelonModel):
 
     @staticmethod
     def create_from_json(object_json, farm_id, last_pulled_at, migration_number: int = 11):
-        group = Group(object_json=object_json,farm_id=farm_id,last_pulled_at=last_pulled_at)
-        group.name = object_json['name']
-        return group
+        lot = Lot(object_json=object_json, farm_id=farm_id, last_pulled_at=last_pulled_at)
+        lot.name = object_json['name']
+        return lot
 
-    def update_from_json(self, group_json, migration_number: int = 11):
-        if self.name != group_json['name']:
-            self.name = group_json['name']
-
-
-class GroupChangelog(ChangeLog):
-    __tablename__ = 'group_changelog'
+    def update_from_json(self, lot_json, migration_number: int = 11):
+        if self.name != lot_json['name']:
+            self.name = lot_json['name']
 
 
-@event.listens_for(Group.name, 'set')
+class LotChangelog(ChangeLog):
+    __tablename__ = 'lot_changelog'
+
+
+@event.listens_for(Lot.name, 'set')
 def receive_set(target, new_value, old_value, initiator):
     if old_value is not NO_VALUE and target.id is not None:
         create_changelog_update_entry(target.watermelon_id, initiator.key, old_value, new_value)
 
 
-@event.listens_for(Group, 'before_delete')
-def receive_before_delete(mapper, connection, target: Group):
-    changelog_entry = GroupChangelog(operation=ChangeOperationType.DELETE, watermelon_id=target.watermelon_id,
-                                     old_value=str(target.serialize()))
+@event.listens_for(Lot, 'before_delete')
+def receive_before_delete(mapper, connection, target: Lot):
+    changelog_entry = LotChangelog(operation=ChangeOperationType.DELETE, watermelon_id=target.watermelon_id,
+                                   old_value=str(target.serialize()))
     db.session.add(changelog_entry)
 
 
 def create_changelog_update_entry(watermelon_id: str, key: str, old_value: str, new_value: str):
-    changelog_entry = GroupChangelog(operation=ChangeOperationType.UPDATE, watermelon_id=watermelon_id,
-                                     old_value=get_changeset_json(key, old_value, new_value))
+    changelog_entry = LotChangelog(operation=ChangeOperationType.UPDATE, watermelon_id=watermelon_id,
+                                   old_value=get_changeset_json(key, old_value, new_value))
     db.session.add(changelog_entry)

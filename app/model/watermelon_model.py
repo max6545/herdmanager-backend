@@ -17,13 +17,20 @@ class WatermelonModel(db.Model):
     last_changed_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
     farm_id = db.Column(db.Integer())
 
+    def __init__(self, object_json, farm_id, last_pulled_at):
+        self.watermelon_id = object_json['id']
+        self.farm_id = farm_id
+        self.created_at = last_pulled_at
+        self.last_changed_at = last_pulled_at
+
     def watermelon_representation(self, migration_number: int):
         raise NotImplementedError
+
     @staticmethod
-    def create_from_json(object_json, farm_id):
+    def create_from_json(object_json, farm_id, migration_number: int = 11):
         raise NotImplementedError
 
-    def update_from_json(self, update_json):
+    def update_from_json(self, update_json, migration_number: int = 11):
         raise NotImplementedError
 
 
