@@ -2,6 +2,13 @@ from flask import current_app as app
 from app.service.synchronization.pull_changes_helper import get_pull_changes
 from datetime import datetime
 from app.model.animal import Animal, AnimalChangelog
+from app.model.tag import Tag, TagChangelog
+from app.model.animal_tags import AnimalTags, AnimalTagsChangelog
+from app.model.configuration import Configuration, ConfigurationChangelog
+from app.model.event import Event, EventChangelog
+from app.model.lot import Lot, LotChangelog
+from app.model.treatment_animals import TreatmentAnimals, TreatmentAnimalsChangelog
+from app.model.treatment import Treatment, TreatmentChangelog
 from app.model.group import Group, GroupChangelog
 from app.model.animal_parents import AnimalParents, AnimalParentsChangelog
 from app.model.group_animals import GroupAnimals, GroupAnimalsChangelog
@@ -25,17 +32,45 @@ table_class_mapping = {
         'model': GroupAnimals,
         'changelog': GroupAnimalsChangelog
     },
+    'tag': {
+        'model': Tag,
+        'changelog': TagChangelog
+    },
+    'animal_tags': {
+        'model': AnimalTags,
+        'changelog': AnimalTagsChangelog
+    },
+    'configuration': {
+        'model': Configuration,
+        'changelog': ConfigurationChangelog
+    },
+    'event': {
+        'model': Event,
+        'changelog': EventChangelog
+    },
+    'lot': {
+        'model': Lot,
+        'changelog': LotChangelog
+    },
+    'treatment': {
+        'model': Treatment,
+        'changelog': TreatmentChangelog
+    },
+    'treatment_animals': {
+        'model': TreatmentAnimals,
+        'changelog': TreatmentChangelog
+    },
 }
 
 
-def sync_data(sync_json, last_pulled_at:datetime):
+def sync_data(sync_json, last_pulled_at: datetime):
     for table_name in table_class_mapping.keys():
         sync_table(table_name, sync_json[table_name], last_pulled_at)
 
 
-def sync_table(table_name: str, table_data, last_pulled_at:datetime):
+def sync_table(table_name: str, table_data, last_pulled_at: datetime):
     if table_class_mapping[table_name]:
-        synchronize(table_class_mapping[table_name]['model'], table_data,last_pulled_at)
+        synchronize(table_class_mapping[table_name]['model'], table_data, last_pulled_at)
     else:
         app.logger.warning(f'Import for table [{table_name}] not implemented')
 
