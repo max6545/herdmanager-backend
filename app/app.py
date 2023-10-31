@@ -5,7 +5,6 @@ from app.config.database import initialize_db
 from app.config.logging import logging_configuration
 from app.config.resources import set_resources
 from app.db.database import db
-import logging
 from flask_migrate import Migrate
 
 # logging configuration

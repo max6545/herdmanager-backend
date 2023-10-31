@@ -2,7 +2,6 @@ import os
 from app.model.user import User
 import nextcloud_client
 
-
 def initialize_db(_app, _db, _migrate):
     if 'IN_DOCKER_ENV' in os.environ:
         get_latest_nc_backup(_app)
@@ -10,7 +9,6 @@ def initialize_db(_app, _db, _migrate):
     _db.init_app(_app)
     _migrate.init_app(_app, _db)
     with _app.app_context():
-        _db.create_all()
         if 'DEFAULT_USERNAME' in os.environ and 'DEFAULT_PASSWORD' in os.environ:
             username = os.getenv('DEFAULT_USERNAME')
             password = os.getenv('DEFAULT_PASSWORD')
