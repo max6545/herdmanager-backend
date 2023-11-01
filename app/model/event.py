@@ -25,7 +25,7 @@ class Event(WatermelonModel):
     def watermelon_representation(self, migration_number: int):
         object_11 = {
             'id': self.watermelon_id,
-            'type': self.type,
+            'event_type': self.type,
             'animal_id': self.animal_id,
             'description': self.description,
             'created_at': get_epoch_from_datetime(self.model_created_at)
@@ -37,19 +37,19 @@ class Event(WatermelonModel):
         animal = Event(object_json=object_json, farm_id=farm_id, last_pulled_at=last_pulled_at)
         animal.model_created_at = get_datetime_from_epoch(object_json['created_at'])
         animal.animal_id = object_json['animal_id']
-        animal.type = object_json['type']
+        animal.type = object_json['event_type']
         animal.description = object_json['description']
         return animal
 
-    def update_from_json(self, animal_json, migration_number: int = 11):
-        if self.model_created_at != get_datetime_from_epoch(animal_json['created_at']):
-            self.model_created_at = get_datetime_from_epoch(animal_json['created_at'])
-        if self.type != animal_json['type']:
-            self.type = animal_json['type']
-        if self.animal_id != animal_json['animal_id']:
-            self.animal_id = animal_json['animal_id']
-        if self.description != animal_json['description']:
-            self.description = animal_json['description']
+    def update_from_json(self, event_json, migration_number: int = 11):
+        if self.model_created_at != get_datetime_from_epoch(event_json['created_at']):
+            self.model_created_at = get_datetime_from_epoch(event_json['created_at'])
+        if self.type != event_json['event_type']:
+            self.type = event_json['event_type']
+        if self.animal_id != event_json['animal_id']:
+            self.animal_id = event_json['animal_id']
+        if self.description != event_json['description']:
+            self.description = event_json['description']
 
 
 class EventChangelog(ChangeLog):
