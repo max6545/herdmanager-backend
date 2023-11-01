@@ -4,7 +4,7 @@ from sqlalchemy import event
 from app.db.database import db
 from app.model.watermelon_model import WatermelonModel, ChangeOperationType, ChangeLog
 from app.model.model_helper import get_changeset_json, get_epoch_from_datetime, get_datetime_from_epoch
-
+import datetime
 
 class Event(WatermelonModel):
     type = db.Column(db.String(255))
@@ -41,7 +41,9 @@ class Event(WatermelonModel):
         animal.description = object_json['description']
         return animal
 
-    def update_from_json(self, event_json, migration_number: int = 11):
+    def update_from_json(self, event_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
+        WatermelonModel.update_from_json(self, event_json, migration_number, last_pulled_at)
+
         if self.model_created_at != get_datetime_from_epoch(event_json['created_at']):
             self.model_created_at = get_datetime_from_epoch(event_json['created_at'])
         if self.type != event_json['event_type']:

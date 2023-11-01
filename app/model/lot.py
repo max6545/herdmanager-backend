@@ -3,7 +3,7 @@ from app.db.database import db
 from sqlalchemy.orm.base import NO_VALUE
 from sqlalchemy import event
 from app.model.model_helper import get_changeset_json
-
+import datetime
 
 class Lot(WatermelonModel):
     name = db.Column(db.String(255))
@@ -27,7 +27,8 @@ class Lot(WatermelonModel):
         lot.name = object_json['name']
         return lot
 
-    def update_from_json(self, lot_json, migration_number: int = 11):
+    def update_from_json(self, lot_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
+        WatermelonModel.update_from_json(self, lot_json, migration_number, last_pulled_at)
         if self.name != lot_json['name']:
             self.name = lot_json['name']
 

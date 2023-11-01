@@ -3,6 +3,7 @@ from app.db.database import db
 from sqlalchemy.orm.base import NO_VALUE
 from sqlalchemy import event
 from app.model.model_helper import get_changeset_json
+import datetime
 
 
 class Group(WatermelonModel):
@@ -23,11 +24,13 @@ class Group(WatermelonModel):
 
     @staticmethod
     def create_from_json(object_json, farm_id, last_pulled_at, migration_number: int = 11):
-        group = Group(object_json=object_json,farm_id=farm_id,last_pulled_at=last_pulled_at)
+        group = Group(object_json=object_json, farm_id=farm_id, last_pulled_at=last_pulled_at)
         group.name = object_json['name']
         return group
 
-    def update_from_json(self, group_json, migration_number: int = 11):
+    def update_from_json(self, group_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
+        WatermelonModel.update_from_json(self, group_json, migration_number, last_pulled_at)
+
         if self.name != group_json['name']:
             self.name = group_json['name']
 

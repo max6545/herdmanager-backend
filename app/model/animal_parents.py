@@ -1,3 +1,5 @@
+import datetime
+
 from sqlalchemy import event
 from app.db.database import db
 from app.model.watermelon_model import WatermelonModel, ChangeOperationType, ChangeLog
@@ -29,7 +31,8 @@ class AnimalParents(WatermelonModel):
         animal_parents.child_id = object_json['child_id']
         return animal_parents
 
-    def update_from_json(self, relation_json, migration_number: int = 11):
+    def update_from_json(self, relation_json, migration_number: int = 11,last_pulled_at=datetime.datetime.now()):
+        WatermelonModel.update_from_json(self, relation_json, migration_number, last_pulled_at)
         if self.child_id != relation_json['child_id']:
             self.child_id = relation_json['child_id']
         if self.parent_id != relation_json['parent_id']:

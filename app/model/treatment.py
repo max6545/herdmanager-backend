@@ -1,3 +1,5 @@
+import datetime
+
 from app.model.watermelon_model import WatermelonModel, ChangeLog, ChangeOperationType
 from app.db.database import db
 from sqlalchemy.orm.base import NO_VALUE
@@ -56,7 +58,8 @@ class Treatment(WatermelonModel):
         treatment.resaled_at = get_datetime_from_epoch(object_json['resaled_at'])
         return treatment
 
-    def update_from_json(self, treatment_json, migration_number: int = 11):
+    def update_from_json(self, treatment_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
+        WatermelonModel.update_from_json(self, treatment_json, migration_number, last_pulled_at)
         if self.order_no != treatment_json['order_no']:
             self.order_no = treatment_json['order_no']
         if self.drug_application != treatment_json['drug_application']:

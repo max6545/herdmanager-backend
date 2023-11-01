@@ -14,7 +14,7 @@ class WatermelonModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     watermelon_id = db.Column(db.String(255))
     created_at = db.Column(db.DateTime, default=datetime.now)
-    last_changed_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    last_changed_at = db.Column(db.DateTime, default=datetime.now)
     farm_id = db.Column(db.Integer())
 
     def __init__(self, object_json, farm_id, last_pulled_at):
@@ -30,8 +30,9 @@ class WatermelonModel(db.Model):
     def create_from_json(object_json, farm_id, migration_number: int = 11):
         raise NotImplementedError
 
-    def update_from_json(self, update_json, migration_number: int = 11):
-        raise NotImplementedError
+    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.now()):
+        self.last_changed_at = last_pulled_at
+
 
 
 class ChangeLog(db.Model):

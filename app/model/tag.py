@@ -1,3 +1,5 @@
+import datetime
+
 from app.model.watermelon_model import WatermelonModel, ChangeLog, ChangeOperationType
 from app.db.database import db
 from sqlalchemy.orm.base import NO_VALUE
@@ -36,7 +38,8 @@ class Tag(WatermelonModel):
         tag.color = object_json['color']
         return tag
 
-    def update_from_json(self, group_json, migration_number: int = 11):
+    def update_from_json(self, group_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
+        WatermelonModel.update_from_json(self, group_json, migration_number, last_pulled_at)
         if self.name != group_json['name']:
             self.name = group_json['name']
         if self.description != group_json['description']:
@@ -55,6 +58,7 @@ class TagChangelog(ChangeLog):
 def receive_set(target, new_value, old_value, initiator):
     if old_value is not NO_VALUE and target.id is not None:
         create_changelog_update_entry(target.watermelon_id, initiator.key, old_value, new_value)
+
 
 @event.listens_for(Tag.name, 'set')
 def receive_set(target, new_value, old_value, initiator):

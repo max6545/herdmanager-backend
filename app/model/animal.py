@@ -78,7 +78,8 @@ class Animal(WatermelonModel):
             animal.lot_id = object_json['lot_id']
         return animal
 
-    def update_from_json(self, animal_json, migration_number: int = 11):
+    def update_from_json(self, animal_json, migration_number: int = 11, last_pulled_at=datetime.now()):
+        WatermelonModel.update_from_json(self, animal_json, migration_number, last_pulled_at)
         if self.sex != animal_json['sex']:
             self.sex = animal_json['sex']
         if self.animal_type != animal_json['animal_type']:
