@@ -12,6 +12,8 @@ def get_changeset_json(key: str, old_value: str, new_value: str):
 
 
 def get_epoch_from_datetime(datetime: datetime):
+    if not datetime:
+        return 0;
     return time.mktime(datetime.timetuple()) * 1000
 
 
