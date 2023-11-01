@@ -7,6 +7,8 @@ from app.db.database import db
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.service.synchronization.service_helper import get_all_changes, get_initial_changes, sync_data
 from app.model.model_helper import get_datetime_from_epoch, get_epoch_from_datetime
+from flask import current_app as app
+
 
 class SynchronizeDB(Resource):
     @staticmethod
@@ -25,9 +27,11 @@ class SynchronizeDB(Resource):
 
         if (request.args['lastPulledAt'] and request.args['lastPulledAt'] != 'null'
                 and request.args['lastPulledAt'] != '0' and request.args['schemaVersion']):
+            app.logger.debug(f'Changes after {request.args["lastPulledAt"]}')
             last_pulled_at = get_datetime_from_epoch(int(request.args['lastPulledAt']))
             changes_object = get_all_changes(last_pulled_at, int(request.args['schemaVersion']))
         else:
+            app.logger.debug('Returning inital Changes for empty DB')
             changes_object = get_initial_changes()
 
         response = {

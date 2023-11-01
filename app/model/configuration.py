@@ -22,26 +22,26 @@ class Configuration(WatermelonModel):
     def watermelon_representation(self, migration_number: int = 11):
         return {
             'id': self.watermelon_id,
-            'key': self.key,
-            'type': self.type,
-            'value': self.value
+            'configuratin_key': self.key,
+            'configuratin_type': self.type,
+            'configuratin_value': self.value
         }
 
     @staticmethod
     def create_from_json(object_json, farm_id, last_pulled_at, migration_number: int = 11):
         configuration = Configuration(object_json=object_json, farm_id=farm_id, last_pulled_at=last_pulled_at)
-        configuration.key = object_json['key']
-        configuration.type = object_json['type']
-        configuration.value = object_json['value']
+        configuration.key = object_json['configuratin_key']
+        configuration.type = object_json['configuratin_type']
+        configuration.value = object_json['configuratin_value']
         return configuration
 
     def update_from_json(self, group_json, migration_number: int = 11):
-        if self.key != group_json['key']:
-            self.key = group_json['key']
-        if self.type != group_json['type']:
-            self.type = group_json['type']
-        if self.value != group_json['value']:
-            self.value = group_json['value']
+        if self.key != group_json['configuratin_key']:
+            self.key = group_json['configuratin_key']
+        if self.type != group_json['configuratin_type']:
+            self.type = group_json['configuratin_type']
+        if self.value != group_json['configuratin_value']:
+            self.value = group_json['configuratin_value']
 
 
 class ConfigurationChangelog(ChangeLog):
