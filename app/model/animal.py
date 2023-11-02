@@ -30,6 +30,8 @@ class Animal(WatermelonModel):
     rejected_reason = db.Column(db.Text())
     rejected_info = db.Column(db.Text())
     lot_id = db.Column(db.Text())
+    father_id = db.Column(db.Text())
+    mother_id = db.Column(db.Text())
 
     def serialize(self):
         return str({
@@ -48,7 +50,10 @@ class Animal(WatermelonModel):
             'name': self.name,
             'country_code': self.country_code,
             'farm_code': self.farm_code,
-            'born_at': get_epoch_from_datetime(self.born_at)
+            'born_at': get_epoch_from_datetime(self.born_at),
+            'father_id': self.father_id,
+            'mother_id': self.mother_id,
+
         }
         if migration_number > 11:
             object_11 = object_11 | {'description': self.description}
@@ -56,7 +61,9 @@ class Animal(WatermelonModel):
             object_11 = object_11 | {'rejected_at': get_epoch_from_datetime(self.rejected_at),
                                      'rejected_reason': self.rejected_reason,
                                      'rejected_info': self.rejected_info,
-                                     'lot_id': self.lot_id}
+                                     'lot_id': self.lot_id,
+                                     'father_id': self.father_id,
+                                     'mother_id': self.mother_id}
         return object_11
 
     @staticmethod
@@ -76,6 +83,8 @@ class Animal(WatermelonModel):
             animal.rejected_reason = object_json['rejected_reason']
             animal.rejected_info = object_json['rejected_info']
             animal.lot_id = object_json['lot_id']
+            animal.father_id = object_json['father_id']
+            animal.mother_id = object_json['mother_id']
         return animal
 
     def update_from_json(self, animal_json, migration_number: int = 11, last_pulled_at=datetime.now()):
@@ -106,10 +115,26 @@ class Animal(WatermelonModel):
                 self.rejected_info = animal_json['rejected_info']
             if self.lot_id != animal_json['lot_id']:
                 self.lot_id = animal_json['lot_id']
+            if self.father_id != animal_json['father_id']:
+                self.father_id = animal_json['father_id']
+            if self.mother_id != animal_json['mother_id']:
+                self.mother_id = animal_json['mother_id']
 
 
 class AnimalChangelog(ChangeLog):
     __tablename__ = 'animal_changelog'
+
+
+@event.listens_for(Animal.father_id, 'set')
+def receive_set(target, new_value, old_value, initiator):
+    if old_value is not NO_VALUE and target.id is not None:
+        create_changelog_update_entry(target.id, initiator.key, str(old_value), str(new_value))
+
+
+@event.listens_for(Animal.mother_id, 'set')
+def receive_set(target, new_value, old_value, initiator):
+    if old_value is not NO_VALUE and target.id is not None:
+        create_changelog_update_entry(target.id, initiator.key, str(old_value), str(new_value))
 
 
 @event.listens_for(Animal.lot_id, 'set')

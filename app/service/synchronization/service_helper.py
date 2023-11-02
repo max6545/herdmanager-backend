@@ -10,7 +10,6 @@ from app.model.lot import Lot, LotChangelog
 from app.model.treatment_animals import TreatmentAnimals, TreatmentAnimalsChangelog
 from app.model.treatment import Treatment, TreatmentChangelog
 from app.model.group import Group, GroupChangelog
-from app.model.animal_parents import AnimalParents, AnimalParentsChangelog
 from app.model.group_animals import GroupAnimals, GroupAnimalsChangelog
 from app.service.synchronization.push_changes_helper import synchronize
 from app.model.model_helper import get_epoch_from_datetime
@@ -23,10 +22,6 @@ table_class_mapping = {
     'group': {
         'model': Group,
         'changelog': GroupChangelog
-    },
-    'animal_parents': {
-        'model': AnimalParents,
-        'changelog': AnimalParentsChangelog
     },
     'group_animals': {
         'model': GroupAnimals,
