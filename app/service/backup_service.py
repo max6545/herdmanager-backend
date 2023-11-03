@@ -19,7 +19,8 @@ class BackupDB(Resource):
                 backup_dir = 'farminv-backup-server'
                 try:
                     for element in nc.list(backup_dir):
-                        app.logger.debug(element.path)
+                        print()
+                    app.logger.debug('backup directory on NEXTCLOUD exists')
                 except:
                     app.logger.warning('backup directory on NEXTCLOUD does not exist creating...')
                     nc.mkdir(backup_dir)
