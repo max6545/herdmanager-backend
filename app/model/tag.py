@@ -38,7 +38,7 @@ class Tag(WatermelonModel):
         tag.color = object_json['color']
         return tag
 
-    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.now()):
+    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
         WatermelonModel.update_from_json(self, update_json, migration_number, last_pulled_at)
         if self.name != update_json['name']:
             self.name = update_json['name']

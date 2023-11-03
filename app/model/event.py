@@ -41,7 +41,7 @@ class Event(WatermelonModel):
         animal.description = object_json['description']
         return animal
 
-    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.now()):
+    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
         WatermelonModel.update_from_json(self, update_json, migration_number, last_pulled_at)
 
         if self.model_created_at != get_datetime_from_epoch(update_json['created_at']):

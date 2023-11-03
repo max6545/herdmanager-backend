@@ -37,7 +37,7 @@ class Configuration(WatermelonModel):
         configuration.value = object_json['configuratin_value']
         return configuration
 
-    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.now()):
+    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
         WatermelonModel.update_from_json(self, update_json, migration_number, last_pulled_at)
 
         if self.key != update_json['configuratin_key']:

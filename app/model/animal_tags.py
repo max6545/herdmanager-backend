@@ -33,7 +33,7 @@ class AnimalTags(WatermelonModel):
         tag.tag_id = object_json['tag_id']
         return tag
 
-    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.now()):
+    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
         WatermelonModel.update_from_json(self, update_json, migration_number, last_pulled_at)
         if self.tag_id != update_json['tag_id']:
             self.tag_id = update_json['tag_id']

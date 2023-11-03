@@ -28,7 +28,7 @@ class Group(WatermelonModel):
         group.name = object_json['name']
         return group
 
-    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.now()):
+    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
         WatermelonModel.update_from_json(self, update_json, migration_number, last_pulled_at)
 
         if self.name != update_json['name']:

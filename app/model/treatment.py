@@ -4,7 +4,6 @@ from app.model.watermelon_model import WatermelonModel, ChangeLog, ChangeOperati
 from app.db.database import db
 from sqlalchemy.orm.base import NO_VALUE
 from sqlalchemy import event
-from app.model.model_helper import get_changeset_json
 from app.model.model_helper import get_changeset_json, get_epoch_from_datetime, get_datetime_from_epoch
 
 
@@ -58,7 +57,7 @@ class Treatment(WatermelonModel):
         treatment.resaled_at = get_datetime_from_epoch(object_json['resaled_at'])
         return treatment
 
-    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.now()):
+    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
         WatermelonModel.update_from_json(self, update_json, migration_number, last_pulled_at)
         if self.order_no != update_json['order_no']:
             self.order_no = update_json['order_no']
