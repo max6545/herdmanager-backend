@@ -38,16 +38,16 @@ class Tag(WatermelonModel):
         tag.color = object_json['color']
         return tag
 
-    def update_from_json(self, group_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
-        WatermelonModel.update_from_json(self, group_json, migration_number, last_pulled_at)
-        if self.name != group_json['name']:
-            self.name = group_json['name']
-        if self.description != group_json['description']:
-            self.description = group_json['description']
-        if self.icon != group_json['icon']:
-            self.icon = group_json['icon']
-        if self.color != group_json['color']:
-            self.color = group_json['color']
+    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.now()):
+        WatermelonModel.update_from_json(self, update_json, migration_number, last_pulled_at)
+        if self.name != update_json['name']:
+            self.name = update_json['name']
+        if self.description != update_json['description']:
+            self.description = update_json['description']
+        if self.icon != update_json['icon']:
+            self.icon = update_json['icon']
+        if self.color != update_json['color']:
+            self.color = update_json['color']
 
 
 class TagChangelog(ChangeLog):

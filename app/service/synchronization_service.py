@@ -51,6 +51,7 @@ class SynchronizeDB(Resource):
         if 'data' in json:
             data = json['data']
             last_pulled_at = get_datetime_from_epoch(json['lastPulledAt'])
-            sync_data(data, last_pulled_at)
+            schema_version = int(json['schemaVersion'])
+            sync_data(data, last_pulled_at, schema_version=schema_version)
 
         return [], HTTPStatus.OK

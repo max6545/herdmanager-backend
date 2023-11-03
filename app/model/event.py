@@ -41,17 +41,17 @@ class Event(WatermelonModel):
         animal.description = object_json['description']
         return animal
 
-    def update_from_json(self, event_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
-        WatermelonModel.update_from_json(self, event_json, migration_number, last_pulled_at)
+    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.now()):
+        WatermelonModel.update_from_json(self, update_json, migration_number, last_pulled_at)
 
-        if self.model_created_at != get_datetime_from_epoch(event_json['created_at']):
-            self.model_created_at = get_datetime_from_epoch(event_json['created_at'])
-        if self.type != event_json['event_type']:
-            self.type = event_json['event_type']
-        if self.animal_id != event_json['animal_id']:
-            self.animal_id = event_json['animal_id']
-        if self.description != event_json['description']:
-            self.description = event_json['description']
+        if self.model_created_at != get_datetime_from_epoch(update_json['created_at']):
+            self.model_created_at = get_datetime_from_epoch(update_json['created_at'])
+        if self.type != update_json['event_type']:
+            self.type = update_json['event_type']
+        if self.animal_id != update_json['animal_id']:
+            self.animal_id = update_json['animal_id']
+        if self.description != update_json['description']:
+            self.description = update_json['description']
 
 
 class EventChangelog(ChangeLog):

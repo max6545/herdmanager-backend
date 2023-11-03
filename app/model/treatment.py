@@ -58,24 +58,24 @@ class Treatment(WatermelonModel):
         treatment.resaled_at = get_datetime_from_epoch(object_json['resaled_at'])
         return treatment
 
-    def update_from_json(self, treatment_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
-        WatermelonModel.update_from_json(self, treatment_json, migration_number, last_pulled_at)
-        if self.order_no != treatment_json['order_no']:
-            self.order_no = treatment_json['order_no']
-        if self.drug_application != treatment_json['drug_application']:
-            self.drug_application = treatment_json['drug_application']
-        if self.drug_used != treatment_json['drug_used']:
-            self.drug_used = treatment_json['drug_used']
-        if self.treated_by != treatment_json['treated_by']:
-            self.treated_by = treatment_json['treated_by']
-        if self.start_at != get_datetime_from_epoch(treatment_json['start_at']):
-            self.start_at = get_datetime_from_epoch(treatment_json['start_at'])
-        if self.end_at != get_datetime_from_epoch(treatment_json['end_at']):
-            self.end_at = get_datetime_from_epoch(treatment_json['end_at'])
-        if self.treated_at != get_datetime_from_epoch(treatment_json['treated_at']):
-            self.treated_at = get_datetime_from_epoch(treatment_json['treated_at'])
-        if self.resaled_at != get_datetime_from_epoch(treatment_json['resaled_at']):
-            self.resaled_at = get_datetime_from_epoch(treatment_json['resaled_at'])
+    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.now()):
+        WatermelonModel.update_from_json(self, update_json, migration_number, last_pulled_at)
+        if self.order_no != update_json['order_no']:
+            self.order_no = update_json['order_no']
+        if self.drug_application != update_json['drug_application']:
+            self.drug_application = update_json['drug_application']
+        if self.drug_used != update_json['drug_used']:
+            self.drug_used = update_json['drug_used']
+        if self.treated_by != update_json['treated_by']:
+            self.treated_by = update_json['treated_by']
+        if self.start_at != get_datetime_from_epoch(update_json['start_at']):
+            self.start_at = get_datetime_from_epoch(update_json['start_at'])
+        if self.end_at != get_datetime_from_epoch(update_json['end_at']):
+            self.end_at = get_datetime_from_epoch(update_json['end_at'])
+        if self.treated_at != get_datetime_from_epoch(update_json['treated_at']):
+            self.treated_at = get_datetime_from_epoch(update_json['treated_at'])
+        if self.resaled_at != get_datetime_from_epoch(update_json['resaled_at']):
+            self.resaled_at = get_datetime_from_epoch(update_json['resaled_at'])
 
 
 class TreatmentChangelog(ChangeLog):

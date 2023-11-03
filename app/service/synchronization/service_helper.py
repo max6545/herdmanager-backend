@@ -58,14 +58,14 @@ table_class_mapping = {
 }
 
 
-def sync_data(sync_json, last_pulled_at: datetime):
+def sync_data(sync_json, last_pulled_at: datetime, schema_version: int):
     for table_name in table_class_mapping.keys():
-        sync_table(table_name, sync_json[table_name], last_pulled_at)
+        sync_table(table_name, sync_json[table_name], last_pulled_at, schema_version)
 
 
-def sync_table(table_name: str, table_data, last_pulled_at: datetime):
+def sync_table(table_name: str, table_data, last_pulled_at: datetime, schema_version: int):
     if table_class_mapping[table_name]:
-        synchronize(table_class_mapping[table_name]['model'], table_data, last_pulled_at)
+        synchronize(table_class_mapping[table_name]['model'], table_data, last_pulled_at, schema_version)
     else:
         app.logger.warning(f'Import for table [{table_name}] not implemented')
 

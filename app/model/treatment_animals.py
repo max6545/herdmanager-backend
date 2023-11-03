@@ -31,12 +31,12 @@ class TreatmentAnimals(WatermelonModel):
         treatment_animals.treatment_id = object_json['treatment_id']
         return treatment_animals
 
-    def update_from_json(self, relation_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
-        WatermelonModel.update_from_json(self, relation_json, migration_number, last_pulled_at)
-        if self.treatment_id != relation_json['treatment_id']:
-            self.treatment_id = relation_json['treatment_id']
-        if self.animal_id != relation_json['animal_id']:
-            self.animal_id = relation_json['animal_id']
+    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.now()):
+        WatermelonModel.update_from_json(self, update_json, migration_number, last_pulled_at)
+        if self.treatment_id != update_json['treatment_id']:
+            self.treatment_id = update_json['treatment_id']
+        if self.animal_id != update_json['animal_id']:
+            self.animal_id = update_json['animal_id']
 
 
 class TreatmentAnimalsChangelog(ChangeLog):

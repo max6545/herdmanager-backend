@@ -37,15 +37,15 @@ class Configuration(WatermelonModel):
         configuration.value = object_json['configuratin_value']
         return configuration
 
-    def update_from_json(self, group_json, migration_number: int = 11,last_pulled_at=datetime.datetime.now()):
-        WatermelonModel.update_from_json(self, group_json, migration_number, last_pulled_at)
+    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.now()):
+        WatermelonModel.update_from_json(self, update_json, migration_number, last_pulled_at)
 
-        if self.key != group_json['configuratin_key']:
-            self.key = group_json['configuratin_key']
-        if self.type != group_json['configuratin_type']:
-            self.type = group_json['configuratin_type']
-        if self.value != group_json['configuratin_value']:
-            self.value = group_json['configuratin_value']
+        if self.key != update_json['configuratin_key']:
+            self.key = update_json['configuratin_key']
+        if self.type != update_json['configuratin_type']:
+            self.type = update_json['configuratin_type']
+        if self.value != update_json['configuratin_value']:
+            self.value = update_json['configuratin_value']
 
 
 class ConfigurationChangelog(ChangeLog):

@@ -30,13 +30,13 @@ class GroupAnimals(WatermelonModel):
         group_animals.group_id = object_json['group_id']
         return group_animals
 
-    def update_from_json(self, relation_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
-        WatermelonModel.update_from_json(self, relation_json, migration_number, last_pulled_at)
+    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.now()):
+        WatermelonModel.update_from_json(self, update_json, migration_number, last_pulled_at)
 
-        if self.group_id != relation_json['group_id']:
-            self.group_id = relation_json['group_id']
-        if self.animal_id != relation_json['animal_id']:
-            self.animal_id = relation_json['animal_id']
+        if self.group_id != update_json['group_id']:
+            self.group_id = update_json['group_id']
+        if self.animal_id != update_json['animal_id']:
+            self.animal_id = update_json['animal_id']
 
 
 class GroupAnimalsChangelog(ChangeLog):

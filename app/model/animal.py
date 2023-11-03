@@ -87,38 +87,36 @@ class Animal(WatermelonModel):
             animal.mother_id = object_json['mother_id']
         return animal
 
-    def update_from_json(self, animal_json, migration_number: int = 11, last_pulled_at=datetime.now()):
-        WatermelonModel.update_from_json(self, animal_json, migration_number, last_pulled_at)
-        if self.sex != animal_json['sex']:
-            self.sex = animal_json['sex']
-        if self.animal_type != animal_json['animal_type']:
-            self.animal_type = animal_json['animal_type']
-        if self.ear_tag != animal_json['ear_tag']:
-            self.ear_tag = animal_json['ear_tag']
-        if self.born_at != get_datetime_from_epoch(animal_json['born_at']):
-            self.born_at = get_datetime_from_epoch(animal_json['born_at'])
-        if self.country_code != animal_json['country_code']:
-            self.country_code = animal_json['country_code']
-        if self.farm_code != animal_json['farm_code']:
-            self.farm_code = animal_json['farm_code']
-        if self.name != animal_json['name']:
-            self.name = animal_json['name']
-        if migration_number > 11:
-            if self.description != animal_json['description']:
-                self.description = animal_json['description']
-        if migration_number > 12:
-            if self.rejected_at != get_datetime_from_epoch(animal_json['rejected_at']):
-                self.rejected_at = get_datetime_from_epoch(animal_json['rejected_at'])
-            if self.rejected_reason != animal_json['rejected_reason']:
-                self.rejected_reason = animal_json['rejected_reason']
-            if self.rejected_info != animal_json['rejected_info']:
-                self.rejected_info = animal_json['rejected_info']
-            if self.lot_id != animal_json['lot_id']:
-                self.lot_id = animal_json['lot_id']
-            if self.father_id != animal_json['father_id']:
-                self.father_id = animal_json['father_id']
-            if self.mother_id != animal_json['mother_id']:
-                self.mother_id = animal_json['mother_id']
+    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.now()):
+        WatermelonModel.update_from_json(self, update_json, migration_number, last_pulled_at)
+        if self.sex != update_json['sex']:
+            self.sex = update_json['sex']
+        if self.animal_type != update_json['animal_type']:
+            self.animal_type = update_json['animal_type']
+        if self.ear_tag != update_json['ear_tag']:
+            self.ear_tag = update_json['ear_tag']
+        if self.born_at != get_datetime_from_epoch(update_json['born_at']):
+            self.born_at = get_datetime_from_epoch(update_json['born_at'])
+        if self.country_code != update_json['country_code']:
+            self.country_code = update_json['country_code']
+        if self.farm_code != update_json['farm_code']:
+            self.farm_code = update_json['farm_code']
+        if self.name != update_json['name']:
+            self.name = update_json['name']
+        if self.description != update_json['description']:
+            self.description = update_json['description']
+        if self.rejected_at != get_datetime_from_epoch(update_json['rejected_at']):
+            self.rejected_at = get_datetime_from_epoch(update_json['rejected_at'])
+        if self.rejected_reason != update_json['rejected_reason']:
+            self.rejected_reason = update_json['rejected_reason']
+        if self.rejected_info != update_json['rejected_info']:
+            self.rejected_info = update_json['rejected_info']
+        if self.lot_id != update_json['lot_id']:
+            self.lot_id = update_json['lot_id']
+        if self.father_id != update_json['father_id']:
+            self.father_id = update_json['father_id']
+        if self.mother_id != update_json['mother_id']:
+            self.mother_id = update_json['mother_id']
 
 
 class AnimalChangelog(ChangeLog):
