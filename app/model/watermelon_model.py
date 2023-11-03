@@ -1,6 +1,7 @@
 from datetime import datetime
 from enum import Enum, auto
 from app.db.database import db
+from app.model.model_helper import get_datetime_from_epoch
 
 
 class ChangeOperationType(Enum):
@@ -17,22 +18,37 @@ class WatermelonModel(db.Model):
     last_changed_at = db.Column(db.DateTime, default=datetime.now)
     farm_id = db.Column(db.Integer())
 
+    def serialize(self):
+        return str({
+            'id': self.id,
+            'watermelon_id': self.watermelon_id,
+            'name': self.name
+        })
+
     def __init__(self, object_json, farm_id, last_pulled_at):
         self.watermelon_id = object_json['id']
         self.farm_id = farm_id
         self.created_at = last_pulled_at
         self.last_changed_at = last_pulled_at
+        for element in self.__table__.c:
+            if (element.key not in ['id', 'watermelon_id', 'farm_id', 'created_at', 'last_changed_at']
+                    and object_json[element.key]):
+                if element.type.__class__.__name__ in ['Integer', 'String', 'Text']:
+                    setattr(self, element.key, object_json[element.key])
+                if element.type.__class__.__name__ == 'DateTime':
+                    setattr(self, element.key, get_datetime_from_epoch(object_json[element.key]))
 
     def watermelon_representation(self, migration_number: int):
         raise NotImplementedError
 
-    @staticmethod
-    def create_from_json(object_json, farm_id, migration_number: int = 11):
-        raise NotImplementedError
-
-    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.now()):
+    def update(self, update_json, migration_number: int = 11, last_pulled_at=datetime.now()):
         self.last_changed_at = last_pulled_at
-
+        for element in self.__table__.c:
+            if element.key in [update_json['_changed']] and update_json[element.key]:
+                if element.type.__class__.__name__ in ['Integer', 'String', 'Text']:
+                    setattr(self, element.key, update_json[element.key])
+                if element.type.__class__.__name__ == 'DateTime':
+                    setattr(self, element.key, get_datetime_from_epoch(update_json[element.key]))
 
 
 class ChangeLog(db.Model):

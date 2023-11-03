@@ -17,20 +17,6 @@ class Treatment(WatermelonModel):
     treated_at = db.Column(db.DateTime)
     resaled_at = db.Column(db.DateTime)
 
-    def serialize(self):
-        return str({
-            'id': self.id,
-            'watermelon_id': self.watermelon_id,
-            'order_no': self.order_no,
-            'drug_used': self.drug_used,
-            'drug_application': self.drug_application,
-            'treated_by': self.treated_by,
-            'start_at': get_epoch_from_datetime(self.start_at),
-            'end_at': get_epoch_from_datetime(self.end_at),
-            'treated_at': get_epoch_from_datetime(self.treated_at),
-            'resaled_at': get_epoch_from_datetime(self.resaled_at)
-        })
-
     def watermelon_representation(self, migration_number: int = 11):
         return {
             'id': self.watermelon_id,
@@ -43,38 +29,6 @@ class Treatment(WatermelonModel):
             'treated_at': get_epoch_from_datetime(self.treated_at),
             'resaled_at': get_epoch_from_datetime(self.resaled_at)
         }
-
-    @staticmethod
-    def create_from_json(object_json, farm_id, last_pulled_at, migration_number: int = 11):
-        treatment = Treatment(object_json=object_json, farm_id=farm_id, last_pulled_at=last_pulled_at)
-        treatment.order_no = object_json['order_no']
-        treatment.drug_used = object_json['drug_used']
-        treatment.drug_application = object_json['drug_application']
-        treatment.treated_by = object_json['treated_by']
-        treatment.start_at = get_datetime_from_epoch(object_json['start_at'])
-        treatment.end_at = get_datetime_from_epoch(object_json['end_at'])
-        treatment.treated_at = get_datetime_from_epoch(object_json['treated_at'])
-        treatment.resaled_at = get_datetime_from_epoch(object_json['resaled_at'])
-        return treatment
-
-    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
-        WatermelonModel.update_from_json(self, update_json, migration_number, last_pulled_at)
-        if self.order_no != update_json['order_no']:
-            self.order_no = update_json['order_no']
-        if self.drug_application != update_json['drug_application']:
-            self.drug_application = update_json['drug_application']
-        if self.drug_used != update_json['drug_used']:
-            self.drug_used = update_json['drug_used']
-        if self.treated_by != update_json['treated_by']:
-            self.treated_by = update_json['treated_by']
-        if self.start_at != get_datetime_from_epoch(update_json['start_at']):
-            self.start_at = get_datetime_from_epoch(update_json['start_at'])
-        if self.end_at != get_datetime_from_epoch(update_json['end_at']):
-            self.end_at = get_datetime_from_epoch(update_json['end_at'])
-        if self.treated_at != get_datetime_from_epoch(update_json['treated_at']):
-            self.treated_at = get_datetime_from_epoch(update_json['treated_at'])
-        if self.resaled_at != get_datetime_from_epoch(update_json['resaled_at']):
-            self.resaled_at = get_datetime_from_epoch(update_json['resaled_at'])
 
 
 class TreatmentChangelog(ChangeLog):

@@ -5,6 +5,7 @@ from sqlalchemy import event
 from app.model.model_helper import get_changeset_json
 import datetime
 
+
 class Lot(WatermelonModel):
     name = db.Column(db.String(255))
 
@@ -20,17 +21,6 @@ class Lot(WatermelonModel):
             'id': self.watermelon_id,
             'name': self.name
         }
-
-    @staticmethod
-    def create_from_json(object_json, farm_id, last_pulled_at, migration_number: int = 11):
-        lot = Lot(object_json=object_json, farm_id=farm_id, last_pulled_at=last_pulled_at)
-        lot.name = object_json['name']
-        return lot
-
-    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
-        WatermelonModel.update_from_json(self, update_json, migration_number, last_pulled_at)
-        if self.name != update_json['name']:
-            self.name = update_json['name']
 
 
 class LotChangelog(ChangeLog):

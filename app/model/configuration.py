@@ -8,63 +8,36 @@ from app.model.model_helper import get_changeset_json
 
 
 class Configuration(WatermelonModel):
-    key = db.Column(db.String(255))
-    type = db.Column(db.String(255))
-    value = db.Column(db.String(255))
-
-    def serialize(self):
-        return str({
-            'id': self.id,
-            'watermelon_id': self.watermelon_id,
-            'key': self.key,
-            'type': self.type,
-            'value': self.value
-        })
+    configuration_key = db.Column(db.String(255))
+    configuration_type = db.Column(db.String(255))
+    configuration_value = db.Column(db.String(255))
 
     def watermelon_representation(self, migration_number: int = 11):
         return {
             'id': self.watermelon_id,
-            'configuratin_key': self.key,
-            'configuratin_type': self.type,
-            'configuratin_value': self.value
+            'configuration_key': self.configuration_key,
+            'configuration_type': self.configuration_type,
+            'configuration_value': self.configuration_value
         }
-
-    @staticmethod
-    def create_from_json(object_json, farm_id, last_pulled_at, migration_number: int = 11):
-        configuration = Configuration(object_json=object_json, farm_id=farm_id, last_pulled_at=last_pulled_at)
-        configuration.key = object_json['configuratin_key']
-        configuration.type = object_json['configuratin_type']
-        configuration.value = object_json['configuratin_value']
-        return configuration
-
-    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
-        WatermelonModel.update_from_json(self, update_json, migration_number, last_pulled_at)
-
-        if self.key != update_json['configuratin_key']:
-            self.key = update_json['configuratin_key']
-        if self.type != update_json['configuratin_type']:
-            self.type = update_json['configuratin_type']
-        if self.value != update_json['configuratin_value']:
-            self.value = update_json['configuratin_value']
 
 
 class ConfigurationChangelog(ChangeLog):
     __tablename__ = 'configuration_changelog'
 
 
-@event.listens_for(Configuration.key, 'set')
+@event.listens_for(Configuration.configuration_key, 'set')
 def receive_set(target, new_value, old_value, initiator):
     if old_value is not NO_VALUE and target.id is not None:
         create_changelog_update_entry(target.watermelon_id, initiator.key, old_value, new_value)
 
 
-@event.listens_for(Configuration.type, 'set')
+@event.listens_for(Configuration.configuration_type, 'set')
 def receive_set(target, new_value, old_value, initiator):
     if old_value is not NO_VALUE and target.id is not None:
         create_changelog_update_entry(target.watermelon_id, initiator.key, old_value, new_value)
 
 
-@event.listens_for(Configuration.value, 'set')
+@event.listens_for(Configuration.configuration_value, 'set')
 def receive_set(target, new_value, old_value, initiator):
     if old_value is not NO_VALUE and target.id is not None:
         create_changelog_update_entry(target.watermelon_id, initiator.key, old_value, new_value)

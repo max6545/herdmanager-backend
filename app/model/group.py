@@ -9,30 +9,11 @@ import datetime
 class Group(WatermelonModel):
     name = db.Column(db.String(255))
 
-    def serialize(self):
-        return str({
-            'id': self.id,
-            'watermelon_id': self.watermelon_id,
-            'name': self.name
-        })
-
     def watermelon_representation(self, migration_number: int = 11):
         return {
             'id': self.watermelon_id,
             'name': self.name
         }
-
-    @staticmethod
-    def create_from_json(object_json, farm_id, last_pulled_at, migration_number: int = 11):
-        group = Group(object_json=object_json, farm_id=farm_id, last_pulled_at=last_pulled_at)
-        group.name = object_json['name']
-        return group
-
-    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
-        WatermelonModel.update_from_json(self, update_json, migration_number, last_pulled_at)
-
-        if self.name != update_json['name']:
-            self.name = update_json['name']
 
 
 class GroupChangelog(ChangeLog):

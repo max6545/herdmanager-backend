@@ -11,34 +11,12 @@ class AnimalTags(WatermelonModel):
     animal_id = db.Column(db.String(255))
     tag_id = db.Column(db.String(255))
 
-    def serialize(self):
-        return str({
-            'id': self.id,
-            'watermelon_id': self.watermelon_id,
-            'animal_id': self.animal_id,
-            'tag_id': self.tag_id
-        })
-
     def watermelon_representation(self, migration_number: int = 11):
         return {
             'id': self.watermelon_id,
             'animal_id': self.animal_id,
             'tag_id': self.tag_id
         }
-
-    @staticmethod
-    def create_from_json(object_json, farm_id, last_pulled_at, migration_number: int = 11):
-        tag = AnimalTags(object_json=object_json, farm_id=farm_id, last_pulled_at=last_pulled_at)
-        tag.animal_id = object_json['animal_id']
-        tag.tag_id = object_json['tag_id']
-        return tag
-
-    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
-        WatermelonModel.update_from_json(self, update_json, migration_number, last_pulled_at)
-        if self.tag_id != update_json['tag_id']:
-            self.tag_id = update_json['tag_id']
-        if self.animal_id != update_json['animal_id']:
-            self.animal_id = update_json['animal_id']
 
 
 class AnimalTagsChangelog(ChangeLog):

@@ -13,13 +13,6 @@ class Tag(WatermelonModel):
     icon = db.Column(db.String(255))
     color = db.Column(db.String(255))
 
-    def serialize(self):
-        return str({
-            'id': self.id,
-            'watermelon_id': self.watermelon_id,
-            'name': self.name
-        })
-
     def watermelon_representation(self, migration_number: int = 11):
         return {
             'id': self.watermelon_id,
@@ -28,26 +21,6 @@ class Tag(WatermelonModel):
             'icon': self.icon,
             'color': self.color
         }
-
-    @staticmethod
-    def create_from_json(object_json, farm_id, last_pulled_at, migration_number: int = 11):
-        tag = Tag(object_json=object_json, farm_id=farm_id, last_pulled_at=last_pulled_at)
-        tag.name = object_json['name']
-        tag.description = object_json['description']
-        tag.icon = object_json['icon']
-        tag.color = object_json['color']
-        return tag
-
-    def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.datetime.now()):
-        WatermelonModel.update_from_json(self, update_json, migration_number, last_pulled_at)
-        if self.name != update_json['name']:
-            self.name = update_json['name']
-        if self.description != update_json['description']:
-            self.description = update_json['description']
-        if self.icon != update_json['icon']:
-            self.icon = update_json['icon']
-        if self.color != update_json['color']:
-            self.color = update_json['color']
 
 
 class TagChangelog(ChangeLog):
