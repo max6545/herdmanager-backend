@@ -8,9 +8,9 @@ import datetime
 
 
 class Event(WatermelonModel):
-    event_type = db.Column(db.String(255))
+    event_type = db.Column(db.String(255), nullable=False)
     animal_id = db.Column(db.String(255))
-    description = db.Column(db.String(255))
+    description = db.Column(db.String(255), nullable=False)
     event_created_at = db.Column(db.DateTime)
 
     def watermelon_representation(self, migration_number: int):

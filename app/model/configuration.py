@@ -8,9 +8,9 @@ from app.model.model_helper import get_changeset_json
 
 
 class Configuration(WatermelonModel):
-    configuration_key = db.Column(db.String(255))
-    configuration_type = db.Column(db.String(255))
-    configuration_value = db.Column(db.String(255))
+    configuration_key = db.Column(db.String(255), nullable=False)
+    configuration_type = db.Column(db.String(255), nullable=False)
+    configuration_value = db.Column(db.String(255), nullable=False)
 
     def watermelon_representation(self, migration_number: int = 11):
         return {

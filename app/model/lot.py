@@ -7,7 +7,7 @@ import datetime
 
 
 class Lot(WatermelonModel):
-    name = db.Column(db.String(255))
+    name = db.Column(db.String(255), nullable=False)
 
     def serialize(self):
         return str({

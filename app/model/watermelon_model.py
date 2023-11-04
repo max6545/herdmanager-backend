@@ -33,7 +33,7 @@ class WatermelonModel(db.Model):
         for element in self.__table__.c:
             if (element.key not in ['id', 'watermelon_id', 'farm_id', 'created_at', 'last_changed_at']
                     and object_json[element.key]):
-                if element.type.__class__.__name__ in ['Integer', 'String', 'Text']:
+                if element.type.__class__.__name__ in ['Integer', 'String', 'Text'] :
                     setattr(self, element.key, object_json[element.key])
                 if element.type.__class__.__name__ == 'DateTime':
                     setattr(self, element.key, get_datetime_from_epoch(object_json[element.key]))

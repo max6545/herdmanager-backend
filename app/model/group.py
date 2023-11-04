@@ -7,7 +7,7 @@ import datetime
 
 
 class Group(WatermelonModel):
-    name = db.Column(db.String(255))
+    name = db.Column(db.String(255), nullable=False)
 
     def watermelon_representation(self, migration_number: int = 11):
         return {

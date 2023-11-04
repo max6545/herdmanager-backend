@@ -8,10 +8,10 @@ from app.model.model_helper import get_changeset_json, get_epoch_from_datetime, 
 
 
 class Treatment(WatermelonModel):
-    order_no = db.Column(db.String(255))
-    drug_application = db.Column(db.String(255))
-    drug_used = db.Column(db.String(255))
-    treated_by = db.Column(db.String(255))
+    order_no = db.Column(db.String(255), nullable=False)
+    drug_application = db.Column(db.String(255), nullable=False)
+    drug_used = db.Column(db.String(255), nullable=False)
+    treated_by = db.Column(db.String(255), nullable=False)
     start_at = db.Column(db.DateTime)
     end_at = db.Column(db.DateTime)
     treated_at = db.Column(db.DateTime)

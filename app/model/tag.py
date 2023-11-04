@@ -8,10 +8,10 @@ from app.model.model_helper import get_changeset_json
 
 
 class Tag(WatermelonModel):
-    name = db.Column(db.String(255))
-    description = db.Column(db.String(255))
-    icon = db.Column(db.String(255))
-    color = db.Column(db.String(255))
+    name = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.String(255), nullable=False)
+    icon = db.Column(db.String(255), nullable=False)
+    color = db.Column(db.String(255), nullable=False)
 
     def watermelon_representation(self, migration_number: int = 11):
         return {
