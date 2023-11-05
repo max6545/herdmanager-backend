@@ -31,13 +31,13 @@ class EventChangelog(ChangeLog):
 @event.listens_for(Event.description, 'set')
 def receive_set(target, new_value, old_value, initiator):
     if old_value is not NO_VALUE and target.id is not None:
-        create_changelog_update_entry(target.id, initiator.key, str(old_value), str(new_value))
+        create_changelog_update_entry(target.watermelon_id, initiator.key, str(old_value), str(new_value))
 
 
 @event.listens_for(Event.event_created_at, 'set')
 def receive_set(target, new_value, old_value, initiator):
     if old_value is not NO_VALUE and target.id is not None:
-        create_changelog_update_entry(target.id, initiator.key, str(old_value), str(new_value))
+        create_changelog_update_entry(target.watermelon_id, initiator.key, str(old_value), str(new_value))
 
 
 @event.listens_for(Event.event_type, 'set')

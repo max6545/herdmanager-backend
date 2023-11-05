@@ -66,25 +66,25 @@ class AnimalChangelog(ChangeLog):
 @event.listens_for(Animal.father_id, 'set')
 def receive_set(target, new_value, old_value, initiator):
     if old_value is not NO_VALUE and target.id is not None:
-        create_changelog_update_entry(target.id, initiator.key, str(old_value), str(new_value))
+        create_changelog_update_entry(target.watermelon_id, initiator.key, str(old_value), str(new_value))
 
 
 @event.listens_for(Animal.mother_id, 'set')
 def receive_set(target, new_value, old_value, initiator):
     if old_value is not NO_VALUE and target.id is not None:
-        create_changelog_update_entry(target.id, initiator.key, str(old_value), str(new_value))
+        create_changelog_update_entry(target.watermelon_id, initiator.key, str(old_value), str(new_value))
 
 
 @event.listens_for(Animal.lot_id, 'set')
 def receive_set(target, new_value, old_value, initiator):
     if old_value is not NO_VALUE and target.id is not None:
-        create_changelog_update_entry(target.id, initiator.key, str(old_value), str(new_value))
+        create_changelog_update_entry(target.watermelon_id, initiator.key, str(old_value), str(new_value))
 
 
 @event.listens_for(Animal.rejected_at, 'set')
 def receive_set(target, new_value, old_value, initiator):
     if old_value is not NO_VALUE and target.id is not None:
-        create_changelog_update_entry(target.id, initiator.key, str(old_value), str(new_value))
+        create_changelog_update_entry(target.watermelon_id, initiator.key, str(old_value), str(new_value))
 
 
 @event.listens_for(Animal.rejected_reason, 'set')
@@ -144,7 +144,7 @@ def receive_set(target, new_value, old_value, initiator):
 @event.listens_for(Animal.born_at, 'set')
 def receive_set(target, new_value, old_value, initiator):
     if old_value is not NO_VALUE and target.id is not None:
-        create_changelog_update_entry(target.id, initiator.key, str(old_value), str(new_value))
+        create_changelog_update_entry(target.watermelon_id, initiator.key, str(old_value), str(new_value))
 
 
 @event.listens_for(Animal, 'before_delete')

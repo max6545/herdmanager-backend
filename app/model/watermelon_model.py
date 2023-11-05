@@ -31,8 +31,7 @@ class WatermelonModel(db.Model):
         self.created_at = last_pulled_at
         self.last_changed_at = last_pulled_at
         for element in self.__table__.c:
-            if (element.key not in ['id', 'watermelon_id', 'farm_id', 'created_at', 'last_changed_at']
-                    and object_json[element.key]):
+            if element.key not in ['id', 'watermelon_id', 'farm_id', 'created_at', 'last_changed_at']:
                 if element.type.__class__.__name__ in ['Integer', 'String', 'Text']:
                     setattr(self, element.key, object_json[element.key])
                 if element.type.__class__.__name__ == 'DateTime':
@@ -44,7 +43,7 @@ class WatermelonModel(db.Model):
     def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.now()):
         changed_fields = str(update_json['_changed']).split(',')
         for element in self.__table__.c:
-            if element.key in changed_fields and update_json[element.key]:
+            if element.key in changed_fields:
                 if element.type.__class__.__name__ in ['Integer', 'String', 'Text']:
                     setattr(self, element.key, update_json[element.key])
                 if element.type.__class__.__name__ == 'DateTime':
