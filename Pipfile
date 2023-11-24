@@ -4,17 +4,19 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "*"
-flask-sqlalchemy = "*"
-flask-restful = "*"
-flask-jwt-extended = "*"
-flask-bcrypt = "*"
-mysql-connector-python = "*"
-flask-migrate="*"
-gunicorn="*"
-pyncclient = "*"
+flask = "3.0.0"
+flask-sqlalchemy = "3.1.1"
+flask-restful = "0.3.10"
+flask-jwt-extended = "4.5.3"
+flask-bcrypt = "1.0.1"
+mysql-connector-python = "8.2.0"
+flask-migrate="4.0.5"
+gunicorn="21.2.0"
+pyncclient = "0.7"
 
 [dev-packages]
+pytest="7.4.3"
+WebTest="3.0.0"
 
 [requires]
 python_version = "3.10"

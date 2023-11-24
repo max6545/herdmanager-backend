@@ -10,12 +10,18 @@ from flask_migrate import Migrate
 # logging configuration
 dictConfig(logging_configuration)
 
-app = Flask(__name__)
-logger = app.logger
-set_application_config(app)
-migrate = Migrate(app, db)
-initialize_db(app, db, migrate)
-set_resources(app)
+
+def create_app(test: bool = False):
+    app = Flask(__name__)
+    logger = app.logger
+    set_application_config(app, test)
+    migrate = Migrate(app, db)
+    with app.app_context():
+        initialize_db(app, db, migrate, test)
+    set_resources(app)
+    return app
+
 
 if __name__ == '__main__':
+    app = create_app()
     app.run(host='0.0.0.0', debug=True)

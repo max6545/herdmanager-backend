@@ -26,14 +26,19 @@ class WatermelonModel(db.Model):
         })
 
     def __init__(self, object_json, farm_id, last_pulled_at):
+        def empty_string_or_value(value):
+            return '' if value is None else value
+
         self.watermelon_id = object_json['id']
         self.farm_id = farm_id
         self.created_at = last_pulled_at
         self.last_changed_at = last_pulled_at
         for element in self.__table__.c:
             if element.key not in ['id', 'watermelon_id', 'farm_id', 'created_at', 'last_changed_at']:
-                if element.type.__class__.__name__ in ['Integer', 'String', 'Text']:
+                if element.type.__class__.__name__ in ['Integer']:
                     setattr(self, element.key, object_json[element.key])
+                if element.type.__class__.__name__ in ['String', 'Text']:
+                    setattr(self, element.key, empty_string_or_value(object_json[element.key]))
                 if element.type.__class__.__name__ == 'DateTime':
                     setattr(self, element.key, get_datetime_from_epoch(object_json[element.key]))
 
@@ -41,6 +46,7 @@ class WatermelonModel(db.Model):
         raise NotImplementedError
 
     def update_from_json(self, update_json, migration_number: int = 11, last_pulled_at=datetime.now()):
+        self.last_changed_at = last_pulled_at
         changed_fields = str(update_json['_changed']).split(',')
         for element in self.__table__.c:
             if element.key in changed_fields:

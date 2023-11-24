@@ -1,13 +1,16 @@
 import os
 from app.model.user import User
+from app.model.farm import Farm
 import nextcloud_client
 
-def initialize_db(_app, _db, _migrate):
+def initialize_db(_app, _db, _migrate, test:bool = False ):
     if 'IN_DOCKER_ENV' in os.environ:
         get_latest_nc_backup(_app)
 
     _db.init_app(_app)
     _migrate.init_app(_app, _db)
+    if test:
+        _db.create_all()
     with _app.app_context():
         if 'DEFAULT_USERNAME' in os.environ and 'DEFAULT_PASSWORD' in os.environ:
             username = os.getenv('DEFAULT_USERNAME')
@@ -24,6 +27,11 @@ def initialize_db(_app, _db, _migrate):
             if default_admin_users is not None:
                 _db.session.delete(default_admin_users)
             user = User.create_user(username, password)
+            farm = Farm()
+            farm.name = 'TestFarm'
+            _db.session.add(farm)
+            _db.session.commit()
+            user.farm_id = farm.id
             _db.session.add(user)
             _db.session.commit()
             _app.logger.info(f'create default user [{username}]')

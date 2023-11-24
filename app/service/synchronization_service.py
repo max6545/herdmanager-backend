@@ -1,12 +1,10 @@
 from http import HTTPStatus
 from datetime import datetime
-from flask import request, current_app as app
+from flask import request
 from flask_restful import Resource
-from app.model.mobile_device import MobileDevice
-from app.db.database import db
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.service.synchronization.service_helper import get_all_changes, get_initial_changes, sync_data
-from app.model.model_helper import get_datetime_from_epoch, get_epoch_from_datetime
+from app.service.synchronization.service_helper import push_data, update_mobile_device, create_pull_response
+from app.model.model_helper import get_datetime_from_epoch
 from flask import current_app as app
 
 
@@ -14,32 +12,19 @@ class SynchronizeDB(Resource):
     @staticmethod
     @jwt_required()
     def get():
-        timestamp = get_epoch_from_datetime(datetime.now())
+        request_start_time = datetime.now()
+        last_pulled_at = None
+        migration_number = None
 
         if request.args['uniqueId']:
-            md = MobileDevice.query.filter(MobileDevice.name == request.args['uniqueId']).first()
-            if md is not None:
-                md.last_pull_at = datetime.now()
-            else:
-                md = MobileDevice(name=request.args['uniqueId'], user_id=get_jwt_identity())
-            db.session.add(md)
-            db.session.commit()
-
-        if (request.args['lastPulledAt'] and request.args['lastPulledAt'] != 'null'
-                and request.args['lastPulledAt'] != '0' and request.args['schemaVersion']):
-            app.logger.debug(f'Changes after {request.args["lastPulledAt"]}')
+            update_mobile_device(request.args['uniqueId'], request_start_time, get_jwt_identity())
+        if request.args['lastPulledAt'] and request.args['lastPulledAt'] != 'null':
             last_pulled_at = get_datetime_from_epoch(int(request.args['lastPulledAt']))
-            changes_object = get_all_changes(last_pulled_at, int(request.args['schemaVersion']))
-        else:
-            app.logger.debug('Returning inital Changes for empty DB')
-            changes_object = get_initial_changes()
+        if request.args['schemaVersion']:
+            migration_number = get_datetime_from_epoch(int(request.args['schemaVersion']))
 
-        response = {
-            'changes': changes_object,
-            'timestamp': timestamp
-        }
-        app.logger.debug(response)
-        return response, HTTPStatus.OK
+        pull_response = create_pull_response(last_pulled_at, migration_number, request_start_time, get_jwt_identity())
+        return pull_response, HTTPStatus.OK
 
     @staticmethod
     @jwt_required()
@@ -49,9 +34,10 @@ class SynchronizeDB(Resource):
         json = request.get_json(force=True)
         app.logger.debug(json)
         if 'data' in json:
-            data = json['data']
-            last_pulled_at = get_datetime_from_epoch(json['lastPulledAt'])
-            schema_version = int(json['schemaVersion'])
-            sync_data(data, last_pulled_at, schema_version=schema_version)
+            push_data(json_data=json['data'],
+                      push_timestamp=get_datetime_from_epoch(json['lastPulledAt']),
+                      schema_version=int(json['schemaVersion']),
+                      user_id=get_jwt_identity()
+                      )
 
         return [], HTTPStatus.OK
