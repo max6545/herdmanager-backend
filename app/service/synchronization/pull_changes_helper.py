@@ -31,6 +31,7 @@ def get_updated_objects(class_name: WatermelonModel, timestamp_as_datetime: date
     updated_relations = (class_name.query
                          .filter(class_name.last_changed_at >= timestamp_as_datetime)
                          .filter(class_name.created_at <= timestamp_as_datetime)
+                         .filter(class_name.created_at != class_name.last_changed_at)
                          .filter(class_name.farm_id == farm_id)
                          .all())
     relation_array = []
