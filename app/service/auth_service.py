@@ -3,12 +3,13 @@ import logging
 from http import HTTPStatus
 
 from flask import request
-from flask_jwt_extended import create_access_token, jwt_required
+from flask_jwt_extended import create_access_token, jwt_required, create_refresh_token, get_jwt_identity
 from flask_restful import Resource
 
 from app.db.database import db
 from app.model.user import User
 from app.service.parsers import user_parser
+
 
 class SignupApi(Resource):
 
@@ -41,4 +42,16 @@ class LoginApi(Resource):
 
         expires = datetime.timedelta(days=7)
         access_token = create_access_token(identity=str(user.id), expires_delta=expires)
+        refresh_token = create_refresh_token(identity=str(user.id), expires_delta=expires)
+        return {'token': access_token, 'refresh': refresh_token, "expires_in": expires.total_seconds()}, HTTPStatus.OK
+
+
+class RefreshToken(Resource):
+
+    @staticmethod
+    @jwt_required(refresh=True)
+    def post():
+        expires = datetime.timedelta(days=7)
+        identity = get_jwt_identity()
+        access_token = create_access_token(identity=identity, expires_delta=expires)
         return {'token': access_token}, HTTPStatus.OK
