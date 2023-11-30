@@ -21,7 +21,7 @@ class SynchronizeDB(Resource):
         if request.args['lastPulledAt'] and request.args['lastPulledAt'] != 'null':
             last_pulled_at = get_datetime_from_epoch(int(request.args['lastPulledAt']))
         if request.args['schemaVersion']:
-            migration_number = get_datetime_from_epoch(int(request.args['schemaVersion']))
+            migration_number = int(request.args['schemaVersion'])
 
         pull_response = create_pull_response(last_pulled_at, migration_number, request_start_time, get_jwt_identity())
         return pull_response, HTTPStatus.OK

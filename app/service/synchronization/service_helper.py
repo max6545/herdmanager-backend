@@ -76,7 +76,7 @@ def sync_table(table_name: str, table_data, last_pulled_at: datetime, schema_ver
         app.logger.warning(f'Import for table [{table_name}] not implemented')
 
 
-def get_changes_object(table_name: str, timestamp_as_datetime, user_id: int, migration_number: int = 11):
+def get_changes_object(table_name: str, timestamp_as_datetime, user_id: int, migration_number: int):
     if table_class_mapping[table_name]:
         return get_pull_changes(table_class_mapping[table_name]['model'], table_class_mapping[table_name]['changelog'],
                                 timestamp_as_datetime, user_id, migration_number)
@@ -89,7 +89,7 @@ def get_changes_object(table_name: str, timestamp_as_datetime, user_id: int, mig
         }
 
 
-def create_pull_response(last_pulled_at, migration_number, request_start_time, user_id: int):
+def create_pull_response(last_pulled_at, migration_number: int, request_start_time: datetime, user_id: int):
     response = {
         'changes': get_changes(last_pulled_at, user_id, migration_number),
         'timestamp': get_epoch_from_datetime(request_start_time)
@@ -98,7 +98,7 @@ def create_pull_response(last_pulled_at, migration_number, request_start_time, u
     return response
 
 
-def get_changes(timestamp, user_id: int, migration_number: int = 11):
+def get_changes(timestamp, user_id: int, migration_number: int):
     if timestamp is not None:
         app.logger.debug(f'Changes after {timestamp}')
         return get_all_changes(timestamp, user_id, migration_number)
@@ -115,7 +115,7 @@ def get_initial_changes(user_id: int):
     return changes_object
 
 
-def get_all_changes(timestamp_as_datetime, user_id: int, migration_number: int = 11):
+def get_all_changes(timestamp_as_datetime, user_id: int, migration_number: int):
     changes_object = {}
     for table_name in table_class_mapping.keys():
         changes_object[table_name] = get_changes_object(table_name, timestamp_as_datetime, user_id, migration_number)
