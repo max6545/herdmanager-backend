@@ -104,11 +104,11 @@ def get_changes(timestamp, user_id: int, migration_number: int):
         return get_all_changes(timestamp, user_id, migration_number)
     else:
         app.logger.debug('Returning inital Changes for empty DB')
-        return get_initial_changes(user_id)
+        return get_initial_changes(user_id, migration_number)
 
 
-def get_initial_changes(user_id: int):
-    changes_object = get_all_changes(datetime.fromtimestamp(0), user_id)
+def get_initial_changes(user_id: int, migration_number: int):
+    changes_object = get_all_changes(datetime.fromtimestamp(0), user_id, migration_number)
     for table_name in table_class_mapping.keys():
         changes_object[table_name]['updated'] = []
         changes_object[table_name]['deleted'] = []
