@@ -3,8 +3,7 @@ from sqlalchemy.orm.base import NO_VALUE
 from sqlalchemy import event
 from app.db.database import db
 from app.model.watermelon_model import WatermelonModel, ChangeOperationType, ChangeLog
-from app.model.model_helper import get_changeset_json, get_epoch_from_datetime, get_datetime_from_epoch
-from datetime import datetime
+from app.model.model_helper import get_changeset_json, get_epoch_from_datetime
 
 
 class AnimalType(Enum):

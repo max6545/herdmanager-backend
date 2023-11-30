@@ -5,6 +5,8 @@ from app.service.backup_service import BackupDB
 from app.service.animal_service import AnimalTypeList
 from app.service.auth_service import SignupApi, LoginApi, RefreshToken
 from app.service.synchronization_service import SynchronizeDB
+from app.service.user_service import UserList, UserGet
+from app.service.farm_service import FarmList, FarmGet
 
 
 def set_resources(_app):
@@ -15,7 +17,10 @@ def set_resources(_app):
     api.add_resource(SignupApi, '/auth/signup')
     api.add_resource(LoginApi, '/auth/login')
     api.add_resource(RefreshToken, '/auth/refresh')
-
+    api.add_resource(UserGet, '/user')
+    api.add_resource(UserList, '/users')
+    api.add_resource(FarmGet, '/farm')
+    api.add_resource(FarmList, '/farms')
     api.add_resource(AnimalTypeList, '/animal/types')
     api.add_resource(SynchronizeDB, '/synchronize')
     api.add_resource(BackupDB, '/backup')

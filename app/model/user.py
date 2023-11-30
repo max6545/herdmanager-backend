@@ -1,5 +1,6 @@
 from flask_bcrypt import generate_password_hash, check_password_hash
 from app.db.database import db
+from app.model.farm import Farm
 
 
 class User(db.Model):
@@ -13,6 +14,8 @@ class User(db.Model):
         return {
             'id': self.id,
             'name': self.name,
+            'farm': Farm.query.filter_by(id=self.farm_id).first().serialize() if self.farm_id is not None else None
+
         }
 
     def hash_password(self):
