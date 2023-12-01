@@ -6,14 +6,14 @@ from app.model.watermelon_model import WatermelonModel, ChangeOperationType, Cha
 from app.model.model_helper import get_changeset_json, get_epoch_from_datetime
 
 
-class AnimalType(Enum):
+class HerdAnimalType(Enum):
     SHEEP = auto()
     GOAT = auto()
     COW = auto()
 
     @staticmethod
     def list():
-        return AnimalType.SHEEP.name, AnimalType.GOAT.name, AnimalType.COW.name
+        return HerdAnimalType.SHEEP.name, HerdAnimalType.GOAT.name, HerdAnimalType.COW.name
 
 
 class Animal(WatermelonModel):
@@ -31,6 +31,21 @@ class Animal(WatermelonModel):
     lot_id = db.Column(db.Text())
     father_id = db.Column(db.Text())
     mother_id = db.Column(db.Text())
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'animal_type': self.animal_type,
+            'ear_tag': self.ear_tag,
+            'sex': self.sex,
+            'name': self.name,
+            'country_code': self.country_code,
+            'farm_code': self.farm_code,
+            'born_at': self.born_at,
+            'father_id': self.father_id,
+            'mother_id': self.mother_id,
+
+        }
 
     def watermelon_representation(self, migration_number: int):
         object_11 = {
