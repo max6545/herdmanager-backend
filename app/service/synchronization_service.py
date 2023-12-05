@@ -2,7 +2,9 @@ from http import HTTPStatus
 from datetime import datetime
 from flask import request
 from flask_restful import Resource
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity
+from app.model.user import Roles
+from app.service.authorization.authorization_helper import check_access
 from app.service.synchronization.service_helper import push_data, update_mobile_device, create_pull_response
 from app.model.model_helper import get_datetime_from_epoch
 from flask import current_app as app
@@ -10,7 +12,7 @@ from flask import current_app as app
 
 class SynchronizeDB(Resource):
     @staticmethod
-    @jwt_required()
+    @check_access([Roles.FARMER])
     def get():
         request_start_time = datetime.now()
         last_pulled_at = None
@@ -27,7 +29,7 @@ class SynchronizeDB(Resource):
         return pull_response, HTTPStatus.OK
 
     @staticmethod
-    @jwt_required()
+    @check_access([Roles.FARMER])
     def post():
         # methods synchronizes backendDB with clientDB with respect to incoming changes
         app.logger.debug('POST')

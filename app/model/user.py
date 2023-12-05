@@ -1,6 +1,13 @@
 from flask_bcrypt import generate_password_hash, check_password_hash
 from app.db.database import db
 from app.model.farm import Farm
+from sqlalchemy import JSON
+from enum import Enum
+
+
+class Roles:
+    ADMIN = 'admin'
+    FARMER = 'farmer'
 
 
 class User(db.Model):
@@ -9,13 +16,14 @@ class User(db.Model):
     password = db.Column(db.String(2000), nullable=False, unique=True)
     mobile_devices = db.relationship('MobileDevice', backref='mobile_device')
     farm_id = db.Column(db.Integer, db.ForeignKey('farm.id'))
+    roles = db.Column(JSON, nullable=False, default=['farmer'])
 
     def serialize(self):
         return {
             'id': self.id,
             'name': self.name,
-            'farm': Farm.query.filter_by(id=self.farm_id).first().serialize() if self.farm_id is not None else None
-
+            'farm': Farm.query.filter_by(id=self.farm_id).first().serialize() if self.farm_id is not None else None,
+            'roles': self.roles
         }
 
     def hash_password(self):
