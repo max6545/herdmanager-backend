@@ -21,8 +21,7 @@ class WatermelonModel(db.Model):
     def serialize(self):
         return str({
             'id': self.id,
-            'watermelon_id': self.watermelon_id,
-            'name': self.name
+            'watermelon_id': self.watermelon_id
         })
 
     def __init__(self, object_json, farm_id, last_pulled_at):

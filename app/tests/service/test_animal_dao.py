@@ -6,6 +6,7 @@ from app.model.animal import Animal
 from app.model.user import User
 from app.db.database import db
 
+
 def test_get_herd_animals(app):
     animal_json = {
         'id': 'WATERMELON_ID', '_status': 'created', '_changed': 'ear_tag', 'animal_type': 'SHEEP',
@@ -30,6 +31,3 @@ def test_get_herd_animals(app):
     db.session.commit()
     animals = get_other_animals(1)
     assert len(animals) == 1
-
-
-
