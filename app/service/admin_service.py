@@ -13,7 +13,6 @@ from app.service.authorization.authorization_helper import check_access
 
 class CreateAdminUser(Resource):
     @staticmethod
-    @check_access([Roles.ADMIN])
     def get():
         return jsonify({'msg': create_initial_user()}), HTTPStatus.OK
 
