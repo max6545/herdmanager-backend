@@ -6,10 +6,8 @@ from flask import request
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, jwt_required
 from flask_restful import Resource
 
-from app.model.user import User, Roles
-from app.service.authorization.authorization_helper import check_access
+from app.model.user import User
 from app.service.parsers import user_parser
-from app.model.model_helper import get_epoch_from_datetime
 
 
 class LoginApi(Resource):
