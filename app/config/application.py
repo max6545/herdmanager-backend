@@ -22,7 +22,7 @@ def set_application_config(_app, test: bool = False):
                 _app.logger.info('Application using EXTERNAL_DB')
                 pw = quote(os.getenv('DB_PW'))
                 user = quote(os.getenv('DB_USER'))
-                host = quote(os.getenv('DB_HOST'))
+                host = os.getenv('DB_HOST')
                 db_name = quote(os.getenv('DB_NAME'))
                 _app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql+psycopg2://{user}:{pw}@{host}/{db_name}'
             else:
