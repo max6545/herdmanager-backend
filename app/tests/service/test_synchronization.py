@@ -8,7 +8,8 @@ from app.db.database import db
 from app.model.model_helper import get_datetime_from_epoch
 
 table_names = ["animal", "event", "group", "lot", "configuration", "treatment", "tag", "group_animals",
-               "treatment_animals", "animal_tags"]
+               "treatment_animals", "animal_tags", "lot_history", "lot_history_old_members", "lot_history_new_members",
+               "group_history", "group_history_old_members", "group_history_new_members"]
 
 
 def test_initial_pull(app):

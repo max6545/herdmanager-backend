@@ -16,7 +16,8 @@ from app.model.group_animals import GroupAnimals, GroupAnimalsChangelog
 from app.service.synchronization.push_changes_helper import synchronize
 from app.model.model_helper import get_epoch_from_datetime
 from app.db.database import db
-
+from app.model.lotHistory import LotHistory,LotHistoryChangelog, LotHistoryOldMembers,LotHistoryNewMembers,LotHistoryOldMembersChangelog, LotHistoryNewMembersChangelog
+from app.model.groupHistory import GroupHistory,GroupHistoryChangelog,GroupHistoryOldMembers,GroupHistoryNewMembers,GroupHistoryOldMembersChangelog,GroupHistoryNewMembersChangelog
 table_class_mapping = {
     'animal': {
         'model': Animal,
@@ -29,6 +30,18 @@ table_class_mapping = {
     'group_animals': {
         'model': GroupAnimals,
         'changelog': GroupAnimalsChangelog
+    },
+    'group_history': {
+        'model': GroupHistory,
+        'changelog': GroupHistoryChangelog
+    },
+    'group_history_old_members': {
+        'model': GroupHistoryOldMembers,
+        'changelog': GroupHistoryOldMembersChangelog
+    },
+    'group_history_new_members': {
+        'model': GroupHistoryNewMembers,
+        'changelog': GroupHistoryNewMembersChangelog
     },
     'tag': {
         'model': Tag,
@@ -49,6 +62,18 @@ table_class_mapping = {
     'lot': {
         'model': Lot,
         'changelog': LotChangelog
+    },
+    'lot_history': {
+        'model': LotHistory,
+        'changelog': LotHistoryChangelog
+    },
+    'lot_history_old_members': {
+        'model': LotHistoryOldMembers,
+        'changelog': LotHistoryOldMembersChangelog
+    },
+    'lot_history_new_members': {
+        'model': LotHistoryNewMembers,
+        'changelog': LotHistoryNewMembersChangelog
     },
     'treatment': {
         'model': Treatment,

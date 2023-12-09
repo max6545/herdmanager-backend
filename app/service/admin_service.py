@@ -22,6 +22,7 @@ class RestoreDB(Resource):
     @staticmethod
     def get():
         get_latest_nc_backup()
+        return jsonify({'msg': 'backup restored'}), HTTPStatus.OK
 
 
 class BackupDB(Resource):

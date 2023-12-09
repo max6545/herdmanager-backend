@@ -11,3 +11,7 @@ from app.model.event import Event, EventChangelog
 from app.model.lot import Lot, LotChangelog
 from app.model.treatment import Treatment, TreatmentChangelog
 from app.model.treatment_animals import TreatmentAnimals, TreatmentAnimalsChangelog
+from app.model.groupHistory import GroupHistory, GroupHistoryChangelog, GroupHistoryOldMembers, GroupHistoryNewMembers, \
+    GroupHistoryNewMembersChangelog, GroupHistoryOldMembersChangelog
+from app.model.lotHistory import LotHistory, LotHistoryChangelog, LotHistoryOldMembers, LotHistoryOldMembersChangelog, \
+    LotHistoryNewMembers, LotHistoryNewMembersChangelog
