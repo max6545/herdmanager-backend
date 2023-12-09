@@ -10,9 +10,6 @@ from app.model.user import User
 
 
 def initialize_db(_app, test: bool = False):
-    if 'IN_DOCKER_ENV' in os.environ:
-        get_latest_nc_backup()
-
     migrate = Migrate(_app, db)
     db.init_app(_app)
     migrate.init_app(_app, db)

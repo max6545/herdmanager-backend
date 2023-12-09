@@ -1,4 +1,5 @@
 import os
+from urllib.parse import quote
 
 
 def set_application_config(_app, test: bool = False):
@@ -15,11 +16,15 @@ def set_application_config(_app, test: bool = False):
                 os.remove(db_path)
             _app.logger.info('Application using SQLite DB for TESTS')
             _app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_name}'
+
         else:
-            if 'MYSQL_CONNECTION_STRING' in os.environ:
-                _app.logger.info('Application using MYSQL DB')
-                mysql_connection_string = os.getenv('MYSQL_CONNECTION_STRING')
-                _app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://' + mysql_connection_string
+            if 'USE_PG_DB' in os.environ:
+                _app.logger.info('Application using EXTERNAL_DB')
+                pw = quote(os.getenv('DB_PW'))
+                user = quote(os.getenv('DB_USER'))
+                host = quote(os.getenv('DB_HOST'))
+                db_name = quote(os.getenv('DB_NAME'))
+                _app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql+psycopg2://{user}:{pw}@{host}/{db_name}'
             else:
                 _app.logger.info('Application using SQLite DB')
                 _app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///farminv.db'
