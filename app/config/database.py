@@ -9,10 +9,9 @@ from app.model.farm import Farm
 from app.model.user import User
 
 
-
 def initialize_db(_app, test: bool = False):
     if 'IN_DOCKER_ENV' in os.environ:
-        get_latest_nc_backup(_app)
+        get_latest_nc_backup()
 
     migrate = Migrate(_app, db)
     db.init_app(_app)
@@ -31,7 +30,7 @@ def create_initial_user():
         username = 'admin'
         password = 'admin'
     user = User.query.filter_by(name=username).one_or_none()
-    
+
     if user is None:
         # create new admin if default username/pw is changed and delete all users in db
         default_admin_users = User.query.filter_by(name='admin').first()
