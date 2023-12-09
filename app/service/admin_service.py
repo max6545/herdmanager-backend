@@ -14,7 +14,7 @@ from app.service.authorization.authorization_helper import check_access
 class CreateAdminUser(Resource):
     @staticmethod
     def get():
-        return jsonify({'msg': create_initial_user()}), HTTPStatus.OK
+        return {'msg': create_initial_user()}, HTTPStatus.OK
 
 
 class RestoreDB(Resource):

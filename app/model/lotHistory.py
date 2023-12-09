@@ -56,14 +56,14 @@ class LotHistoryOldMembers(WatermelonModel):
         return {
             'id': self.watermelon_id,
             'history_id': self.history_id,
-            'animal_id': self.animal
+            'animal_id': self.animal_id
         }
 
     def serialize(self):
         return {
             'id': self.id,
             'history_id': self.history_id,
-            'animal_id': self.animal
+            'animal_id': self.animal_id
         }
 
 
@@ -87,14 +87,14 @@ class LotHistoryNewMembers(WatermelonModel):
         return {
             'id': self.watermelon_id,
             'history_id': self.history_id,
-            'animal_id': self.animal
+            'animal_id': self.animal_id
         }
 
     def serialize(self):
         return {
             'id': self.id,
             'history_id': self.history_id,
-            'animal_id': self.animal
+            'animal_id': self.animal_id
         }
 
 
