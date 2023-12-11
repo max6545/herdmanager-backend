@@ -1,23 +1,27 @@
+from datetime import datetime
+
 from flask import current_app as app
 
 from app import MobileDevice
-from app.service.synchronization.pull_changes_helper import get_pull_changes
-from datetime import datetime
+from app.db.database import db
 from app.model.animal import Animal, AnimalChangelog
-from app.model.tag import Tag, TagChangelog
 from app.model.animal_tags import AnimalTags, AnimalTagsChangelog
 from app.model.configuration import Configuration, ConfigurationChangelog
 from app.model.event import Event, EventChangelog
-from app.model.lot import Lot, LotChangelog
-from app.model.treatment_animals import TreatmentAnimals, TreatmentAnimalsChangelog
-from app.model.treatment import Treatment, TreatmentChangelog
 from app.model.group import Group, GroupChangelog
+from app.model.groupHistory import GroupHistory, GroupHistoryChangelog, GroupHistoryOldMembers, GroupHistoryNewMembers, \
+    GroupHistoryOldMembersChangelog, GroupHistoryNewMembersChangelog
 from app.model.group_animals import GroupAnimals, GroupAnimalsChangelog
+from app.model.lot import Lot, LotChangelog
+from app.model.lotHistory import LotHistory, LotHistoryChangelog, LotHistoryOldMembers, LotHistoryNewMembers, \
+    LotHistoryOldMembersChangelog, LotHistoryNewMembersChangelog
+from app.model.model_helper import get_datetime_from_epoch
+from app.model.tag import Tag, TagChangelog
+from app.model.treatment import Treatment, TreatmentChangelog
+from app.model.treatment_animals import TreatmentAnimals, TreatmentAnimalsChangelog
+from app.service.synchronization.pull_changes_helper import get_pull_changes
 from app.service.synchronization.push_changes_helper import synchronize
-from app.model.model_helper import get_epoch_from_datetime
-from app.db.database import db
-from app.model.lotHistory import LotHistory,LotHistoryChangelog, LotHistoryOldMembers,LotHistoryNewMembers,LotHistoryOldMembersChangelog, LotHistoryNewMembersChangelog
-from app.model.groupHistory import GroupHistory,GroupHistoryChangelog,GroupHistoryOldMembers,GroupHistoryNewMembers,GroupHistoryOldMembersChangelog,GroupHistoryNewMembersChangelog
+
 table_class_mapping = {
     'animal': {
         'model': Animal,
@@ -114,10 +118,10 @@ def get_changes_object(table_name: str, timestamp_as_datetime, user_id: int, mig
         }
 
 
-def create_pull_response(last_pulled_at, migration_number: int, request_start_time: datetime, user_id: int):
+def create_pull_response(last_pulled_at, migration_number: int, request_start_time_epoch: int, user_id: int):
     response = {
         'changes': get_changes(last_pulled_at, user_id, migration_number),
-        'timestamp': get_epoch_from_datetime(request_start_time)
+        'timestamp': request_start_time_epoch
     }
     app.logger.debug(response)
     return response
@@ -147,10 +151,10 @@ def get_all_changes(timestamp_as_datetime, user_id: int, migration_number: int):
     return changes_object
 
 
-def update_mobile_device(unique_id: str, now: datetime, user_id):
+def update_mobile_device(unique_id: str, now_epoch: int, user_id):
     md = MobileDevice.query.filter(MobileDevice.name == unique_id).first()
     if md is not None:
-        md.last_pull_at = now
+        md.last_pull_at = get_datetime_from_epoch(now_epoch)
     else:
         md = MobileDevice(name=unique_id, user_id=user_id)
     db.session.add(md)
