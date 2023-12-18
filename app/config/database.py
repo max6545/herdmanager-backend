@@ -12,8 +12,8 @@ def initialize_db(_app, test: bool = False):
     migrate = Migrate(_app, db)
     db.init_app(_app)
     migrate.init_app(_app, db)
-    upgrade(directory='migrations')
     if test:
+        upgrade(directory='migrations')
         create_initial_user()
 
 
