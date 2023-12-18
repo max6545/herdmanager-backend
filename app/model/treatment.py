@@ -16,6 +16,8 @@ class Treatment(WatermelonModel):
     end_at = db.Column(db.DateTime)
     treated_at = db.Column(db.DateTime)
     resaled_at = db.Column(db.DateTime)
+    reason = db.Column(db.String(255))
+    is_template = db.Column(db.Boolean, default=False, server_default="0", nullable=False)
 
     def watermelon_representation(self, migration_number: int = 11):
         return {
@@ -51,6 +53,18 @@ def receive_set(target, new_value, old_value, initiator):
 def receive_set(target, new_value, old_value, initiator):
     if old_value is not NO_VALUE and target.id is not None:
         create_changelog_update_entry(target.watermelon_id, initiator.key, old_value, new_value)
+
+
+@event.listens_for(Treatment.reason, 'set')
+def receive_set(target, new_value, old_value, initiator):
+    if old_value is not NO_VALUE and target.id is not None:
+        create_changelog_update_entry(target.watermelon_id, initiator.key, old_value, new_value)
+
+
+@event.listens_for(Treatment.is_template, 'set')
+def receive_set(target, new_value, old_value, initiator):
+    if old_value is not NO_VALUE and target.id is not None:
+        create_changelog_update_entry(target.watermelon_id, initiator.key, str(old_value), str(new_value))
 
 
 @event.listens_for(Treatment.order_no, 'set')

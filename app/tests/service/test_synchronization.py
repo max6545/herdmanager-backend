@@ -150,7 +150,7 @@ def test_create_update_delete_treatment(app):
                     {'id': w_id, '_status': 'created', '_changed': '', 'order_no': 'ORDER',
                      'drug_application': 'application', 'drug_used': 'USED', 'treated_by': 'me',
                      'start_at': 1700504203888, 'end_at': 1700504203888, 'resaled_at': 1700504203888,
-                     'treated_at': 1700504203888},
+                     'treated_at': 1700504203888, 'reason': 'r1', 'is_template': False},
                 ],
                 'updated': [],
                 'deleted': []
@@ -176,7 +176,7 @@ def test_create_update_delete_treatment(app):
                     {'id': w_id, '_status': 'created', '_changed': 'treated_by', 'order_no': 'ORDER',
                      'drug_application': 'application', 'drug_used': 'USED', 'treated_by': 'you',
                      'start_at': 1700504203888, 'end_at': 1700504203888, 'resaled_at': 1700504203888,
-                     'treated_at': 1700504203888}],
+                     'treated_at': 1700504203888, 'reason': 'r1', 'is_template': False}],
                 'deleted': []
             }
         },

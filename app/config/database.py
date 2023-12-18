@@ -1,7 +1,7 @@
 import logging
 import os
 
-from flask_migrate import Migrate
+from flask_migrate import Migrate, upgrade
 
 from app.db.database import db
 from app.model.farm import Farm
@@ -12,8 +12,8 @@ def initialize_db(_app, test: bool = False):
     migrate = Migrate(_app, db)
     db.init_app(_app)
     migrate.init_app(_app, db)
+    upgrade(directory='migrations')
     if test:
-        db.create_all()
         create_initial_user()
 
 

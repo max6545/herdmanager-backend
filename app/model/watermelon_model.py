@@ -28,12 +28,17 @@ class WatermelonModel(db.Model):
         def empty_string_or_value(value):
             return '' if value is None else value
 
+        def boolean_value(value):
+            return True if int(value) == 1 else False
+
         self.watermelon_id = object_json['id']
         self.farm_id = farm_id
         self.created_at = last_pulled_at
         self.last_changed_at = last_pulled_at
         for element in self.__table__.c:
             if element.key not in ['id', 'watermelon_id', 'farm_id', 'created_at', 'last_changed_at']:
+                if element.type.__class__.__name__ in ['Boolean']:
+                    setattr(self, element.key, boolean_value(object_json[element.key]))
                 if element.type.__class__.__name__ in ['Integer']:
                     setattr(self, element.key, object_json[element.key])
                 if element.type.__class__.__name__ in ['String', 'Text']:
