@@ -20,7 +20,7 @@ def set_resources(_app):
     api.add_resource(RefreshToken, '/auth/refresh')
     api.add_resource(UserGet, '/user/<user_id>')
     api.add_resource(UserList, '/user')
-    api.add_resource(FarmGet, '/farm/<int:farm_id>')
+    api.add_resource(FarmGet, '/farm/<farm_id>')
     api.add_resource(FarmList, '/farm')
     api.add_resource(AnimalList, '/animal')
     api.add_resource(SynchronizeDB, '/synchronize')
