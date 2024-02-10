@@ -2,6 +2,7 @@ from logging.config import dictConfig
 
 from flask import Flask
 from flask_cors import CORS
+from flask_compress import Compress
 
 from app.config.application import set_application_config
 from app.config.database import initialize_db
@@ -14,6 +15,7 @@ dictConfig(logging_configuration)
 
 def create_app(test: bool = False):
     app = Flask(__name__)
+    Compress(app)
     set_application_config(app, test)
     with app.app_context():
         initialize_db(app, test)
