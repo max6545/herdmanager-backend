@@ -123,7 +123,8 @@ def create_pull_response(last_pulled_at, migration_number: int, request_start_ti
         'changes': get_changes(last_pulled_at, user_id, migration_number),
         'timestamp': request_start_time_epoch
     }
-    app.logger.debug(response)
+    app.logger.debug('PULL RESPONSE CREATED')
+    # app.logger.debug(response)
     return response
 
 
